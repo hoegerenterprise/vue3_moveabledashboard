@@ -1,0 +1,159 @@
+Vue3 Moveable Dashboard - Project Structure
+============================================
+
+vue3_moveable_dashboard/
+│
+├── 📦 Package Configuration
+│   ├── package.json              # NPM package configuration
+│   ├── package-lock.json         # Dependency lock file
+│   ├── vite.config.ts           # Vite build configuration
+│   ├── tsconfig.json            # TypeScript configuration
+│   ├── tsconfig.app.json        # App-specific TS config
+│   └── tsconfig.node.json       # Node-specific TS config
+│
+├── 📁 src/ - Source Code
+│   │
+│   ├── 🎨 components/ - Core Components
+│   │   ├── MoveableDashboard.vue     # Main dashboard component (333 lines)
+│   │   │   ├── Props: cards, enableEdit, draggable, resizable, rotatable, zoom
+│   │   │   ├── Events: card-selected, card-moved, card-resized, card-rotated
+│   │   │   └── Features: Drag, resize, rotate, selection handling
+│   │   │
+│   │   ├── DashboardCard.vue         # Card container (76 lines)
+│   │   │   ├── Props: card
+│   │   │   ├── Slots: default (content), actions (header actions)
+│   │   │   └── Features: Header with title, action buttons, slot-based content
+│   │   │
+│   │   └── HelloWorld.vue            # Legacy component (to be removed)
+│   │
+│   ├── 📊 demo/ - Demo Application
+│   │   ├── DemoPage.vue              # Main demo page
+│   │   │   ├── Features: Add/remove cards, edit mode toggle, event logging
+│   │   │   └── State persistence with localStorage
+│   │   │
+│   │   └── cards/ - Example Card Components
+│   │       ├── ChartCard.vue         # Chart visualization example
+│   │       ├── StatsCard.vue         # Statistics display example
+│   │       ├── ListCard.vue          # List/table example
+│   │       ├── TextCard.vue          # Text/notes example
+│   │       └── DefaultCard.vue       # Default fallback card
+│   │
+│   ├── 📝 types/ - TypeScript Definitions
+│   │   ├── interfaces.ts             # Core interfaces
+│   │   │   ├── IDashboardCard
+│   │   │   ├── IMoveableDashboardContainer
+│   │   │   ├── IMoveableDashboard
+│   │   │   ├── ICardTransform
+│   │   │   └── IDashboardEvents
+│   │   │
+│   │   └── index.ts                  # Type exports
+│   │
+│   ├── 🚀 Entry Points
+│   │   ├── index.ts                  # Package main entry (exports components & types)
+│   │   ├── main.ts                   # Dev server entry
+│   │   ├── App.vue                   # Demo app wrapper
+│   │   └── vite-env.d.ts            # Vite type definitions
+│   │
+│   └── 🎨 assets/                   # Static assets
+│       └── (images, fonts, etc.)
+│
+├── 📦 dist/ - Built Package (Generated)
+│   ├── index.es.js                  # ES module (~100KB)
+│   ├── index.cjs.js                 # CommonJS module (~73KB)
+│   ├── index.d.ts                   # Main TypeScript definitions
+│   ├── types/                       # Detailed type definitions
+│   └── vue3-moveable-dashboard.css  # Bundled styles (~44KB)
+│
+├── 📚 Documentation
+│   ├── README.md                    # Complete API reference (445 lines)
+│   ├── QUICKSTART.md                # Quick start guide
+│   ├── EXAMPLES.md                  # 8+ usage examples
+│   ├── PACKAGE_SUMMARY.md           # Package overview
+│   ├── TROUBLESHOOTING.md           # Common issues and solutions
+│   ├── CHANGELOG.md                 # Version history
+│   └── PROJECT_STRUCTURE.txt        # This file
+│
+└── 🔧 Configuration Files
+    ├── shims-vue.d.ts              # Vue SFC type shims
+    └── .gitignore                   # Git ignore rules
+
+═══════════════════════════════════════════════════════════════════
+
+📦 PACKAGE EXPORTS
+═══════════════════════════════════════════════════════════════════
+
+Main Entry:
+  import { MoveableDashboard, DashboardCard } from 'vue3-moveable-dashboard'
+
+Plugin Installation:
+  import Vue3MoveableDashboard from 'vue3-moveable-dashboard'
+  app.use(Vue3MoveableDashboard)
+
+Type Imports:
+  import type { 
+    IMoveableDashboardContainer,
+    IDashboardCard,
+    IMoveableDashboard 
+  } from 'vue3-moveable-dashboard'
+
+═══════════════════════════════════════════════════════════════════
+
+🎯 KEY FEATURES
+═══════════════════════════════════════════════════════════════════
+
+✅ Drag and drop cards
+✅ Resize cards with handles
+✅ Rotate cards
+✅ Select/deselect with visual feedback
+✅ Edit mode toggle
+✅ Slot-based content injection
+✅ Rich event system
+✅ Full TypeScript support
+✅ Vuetify integration
+✅ Multiple instances support
+✅ State persistence example
+✅ Comprehensive documentation
+
+═══════════════════════════════════════════════════════════════════
+
+📋 COMPONENT HIERARCHY
+═══════════════════════════════════════════════════════════════════
+
+App.vue
+└── DemoPage.vue
+    └── MoveableDashboard
+        └── DashboardCard (for each card)
+            └── [User Content via Slot]
+                ├── ChartCard
+                ├── StatsCard
+                ├── ListCard
+                ├── TextCard
+                └── DefaultCard
+
+═══════════════════════════════════════════════════════════════════
+
+🔄 DATA FLOW
+═══════════════════════════════════════════════════════════════════
+
+Parent Component
+    ↓ (cards prop)
+MoveableDashboard
+    ↓ (card prop via scoped slot)
+DashboardCard
+    ↓ (default slot)
+User Content Component
+    
+User Interaction → Event Emission → Parent Handler → State Update
+
+═══════════════════════════════════════════════════════════════════
+
+🛠 DEVELOPMENT COMMANDS
+═══════════════════════════════════════════════════════════════════
+
+npm install          # Install dependencies
+npm run dev          # Run development server
+npm run build        # Build package for distribution
+npm run type-check   # TypeScript type checking
+npm run preview      # Preview production build
+
+═══════════════════════════════════════════════════════════════════
