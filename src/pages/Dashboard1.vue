@@ -1,44 +1,29 @@
 <template>
-  <v-container fluid class="pa-0">
-    <!-- Header -->
-    <v-app-bar color="primary" elevation="2">
-      <v-app-bar-title>Dashboard 1 - Main Workspace</v-app-bar-title>
-      <v-spacer></v-spacer>
-      <v-btn icon @click="toggleEditMode">
-        <v-icon>{{ dashboard.editMode.value ? 'mdi-lock-open' : 'mdi-lock' }}</v-icon>
-      </v-btn>
-      <v-btn icon @click="addNewCard">
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
-      <v-btn icon @click="resetCards">
-        <v-icon>mdi-refresh</v-icon>
-      </v-btn>
-    </v-app-bar>
+  <div class="dashboard-page">
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <v-toolbar color="primary" density="compact" elevation="1">
+        <v-toolbar-title>
+          <v-icon class="mr-2">mdi-view-dashboard</v-icon>
+          Dashboard 1 - Main Workspace
+        </v-toolbar-title>
+        <v-spacer></v-spacer>
 
-    <!-- Info Panel -->
-    <v-container>
-      <v-row>
-        <v-col cols="12">
-          <v-alert type="info" variant="tonal" class="mb-4">
-            <v-alert-title>
-              <v-icon>mdi-view-dashboard</v-icon>
-              Dashboard 1 - Main Workspace
-            </v-alert-title>
-            <div class="mt-2">
-              <p><strong>This is your main dashboard for primary tasks.</strong></p>
-              <p class="mt-2">
-                <strong>Edit Mode:</strong> {{ dashboard.editMode.value ? 'Enabled' : 'Disabled' }} |
-                <strong>Selected Card:</strong> {{ dashboard.selectedCardId.value || 'None' }} |
-                <strong>Total Cards:</strong> {{ dashboard.totalCards.value }}
-              </p>
-              <p class="mt-2">
-                <v-chip color="success" size="small">Persisted independently from Dashboard 2</v-chip>
-              </p>
-            </div>
-          </v-alert>
-        </v-col>
-      </v-row>
-    </v-container>
+        <v-chip size="small" variant="outlined" class="mr-2">
+          Cards: {{ dashboard.totalCards.value }}
+        </v-chip>
+
+        <v-btn icon size="small" @click="toggleEditMode">
+          <v-icon>{{ dashboard.editMode.value ? 'mdi-lock-open' : 'mdi-lock' }}</v-icon>
+        </v-btn>
+        <v-btn icon size="small" @click="addNewCard">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+        <v-btn icon size="small" @click="resetCards">
+          <v-icon>mdi-refresh</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </div>
 
     <!-- Dashboard Container -->
     <div class="dashboard-wrapper">
@@ -90,7 +75,7 @@
         </template>
       </MoveableDashboard>
     </div>
-  </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -219,11 +204,24 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.toolbar {
+  flex-shrink: 0;
+  width: 100%;
+}
+
 .dashboard-wrapper {
-  height: calc(100vh - 250px);
-  min-height: 600px;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
   background-color: #f5f5f5;
-  border: 1px solid #ddd;
   position: relative;
 }
 </style>

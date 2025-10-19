@@ -295,14 +295,17 @@ defineExpose({
 .moveable-dashboard-container {
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .viewport {
   position: relative;
   width: 100%;
+  height: 100%;
+  min-width: 100%;
   min-height: 100%;
   background-color: #f5f5f5;
+  overflow: auto;
 }
 
 .dashboard-item {

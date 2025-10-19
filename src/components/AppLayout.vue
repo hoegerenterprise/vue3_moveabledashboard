@@ -128,7 +128,7 @@
     </v-app-bar>
 
     <!-- Main Content -->
-    <v-main>
+    <v-main class="main-content">
       <router-view></router-view>
     </v-main>
 
@@ -230,5 +230,17 @@ function toggleTheme() {
 <style scoped>
 :deep(.v-navigation-drawer) {
   z-index: 1002;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content :deep(.v-main__wrap) {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
 }
 </style>
