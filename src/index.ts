@@ -5,6 +5,13 @@ import DashboardCard from './components/DashboardCard.vue';
 // Export types
 export * from './types';
 
+// Export stores
+export { useDashboardStore, createDashboardStore } from './stores/dashboard';
+export type { DashboardState } from './stores/dashboard';
+
+// Export composables
+export { useDashboardAPI, setupGlobalDashboardAPI } from './composables/useDashboardAPI';
+
 // Export components
 export { MoveableDashboard, DashboardCard };
 

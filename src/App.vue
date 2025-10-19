@@ -1,11 +1,7 @@
 <template>
-  <v-app>
-    <v-main>
-      <DemoPage />
-    </v-main>
-  </v-app>
+  <AppLayout />
 </template>
 
 <script setup lang="ts">
-import DemoPage from './demo/DemoPage.vue';
+import AppLayout from './components/AppLayout.vue';
 </script>

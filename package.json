@@ -37,8 +37,8 @@
   },
   "peerDependencies": {
     "vue": "^3.0.0",
-    "vuetify": "^3.0.0",
-    "vue3-moveable": "^0.28.0"
+    "vue3-moveable": "^0.28.0",
+    "vuetify": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.15.21",
@@ -47,8 +47,12 @@
     "vite-plugin-vuetify": "^2.1.1",
     "vue": "^3.5.14",
     "vue-tsc": "^2.2.10",
-    "vuetify": "^3.8.0-beta.0",
-    "vue3-moveable": "^0.28.0"
+    "vue3-moveable": "^0.28.0",
+    "vuetify": "^3.8.0-beta.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^4.5.0",
+    "vue-router": "^4.6.3"
+  }
 }
