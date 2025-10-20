@@ -1,17 +1,22 @@
 # Vue3 Moveable Dashboard
 
-A flexible and customizable Vue 3 component library for creating interactive dashboards with moveable, resizable, and rotatable cards. Built with Vue 3, Vuetify, and vue3-moveable.
+A flexible and customizable Vue 3 component library for creating interactive dashboards with moveable, resizable, and rotatable cards. Built with Vue 3, Vuetify, Pinia, and vue3-moveable.
 
 ## Features
 
 - **Drag and Drop**: Move cards anywhere on the dashboard
 - **Resizable**: Dynamically resize cards to fit your content
 - **Rotatable**: Rotate cards for creative layouts
+- **Grid Snapping**: Snap cards to grid for precise alignment
 - **Customizable**: Use slots to inject any content into cards
 - **TypeScript Support**: Full TypeScript definitions included
 - **Vuetify Integration**: Beautiful Material Design UI components
 - **Event System**: Rich event system for tracking card interactions
-- **State Management**: Built-in support for persisting card positions and sizes
+- **State Management**: Pinia store with automatic localStorage persistence
+- **Dashboard API**: Powerful composable API for programmatic control
+- **Multiple Dashboards**: Support for multiple independent dashboard instances
+- **Edit Mode**: Toggle between edit and view modes
+- **Dark Mode**: Full dark mode support
 
 ## Installation
 
@@ -33,7 +38,7 @@ npm install vue3-moveable-dashboard
 ### Install Peer Dependencies
 
 ```bash
-npm install vue3-moveable
+npm install vue3-moveable pinia pinia-plugin-persistedstate
 ```
 
 ## Setup
@@ -47,6 +52,8 @@ You can register components globally or use them locally.
 ```typescript
 import { createApp } from 'vue';
 import App from './App.vue';
+import { createPinia } from 'pinia';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import Vue3MoveableDashboard from 'vue3-moveable-dashboard';
 
 // Import Vuetify
@@ -60,9 +67,14 @@ const vuetify = createVuetify({
   directives,
 });
 
+// Setup Pinia with persistence
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+
 const app = createApp(App);
 
-// Use Vuetify
+// Use Pinia and Vuetify
+app.use(pinia);
 app.use(vuetify);
 
 // Register dashboard components globally
@@ -79,7 +91,16 @@ import { MoveableDashboard, DashboardCard } from 'vue3-moveable-dashboard';
 </script>
 ```
 
-### 2. Import Types (Optional, for TypeScript)
+### 2. Import Dashboard API (Recommended)
+
+```typescript
+import { useDashboardAPI } from 'vue3-moveable-dashboard';
+
+// Use the powerful dashboard API
+const dashboard = useDashboardAPI();
+```
+
+### 3. Import Types (Optional, for TypeScript)
 
 ```typescript
 import type {
@@ -258,39 +279,78 @@ const dashboardCards = ref([/* your cards */]);
 </script>
 ```
 
-### Persist Card Positions
+### Using Dashboard API
+
+The recommended approach using the powerful Dashboard API:
 
 ```vue
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { useDashboardAPI } from 'vue3-moveable-dashboard';
 
-const dashboardCards = ref([]);
+// Initialize dashboard API
+const dashboard = useDashboardAPI();
 
-// Load saved positions on mount
-onMounted(() => {
-  const saved = localStorage.getItem('dashboard-cards');
-  if (saved) {
-    dashboardCards.value = JSON.parse(saved);
-  }
-});
-
-// Save positions when cards are updated
-function handleCardsUpdated(cards) {
-  localStorage.setItem('dashboard-cards', JSON.stringify(cards));
+// Cards are automatically persisted to localStorage
+// Add a card programmatically
+function addCard() {
+  dashboard.addCard({
+    type: 'chart',
+    header: 'New Card',
+    x: 100,
+    y: 100,
+    width: 400
+  });
 }
+
+// Access reactive state
+const totalCards = dashboard.totalCards; // Automatically updates
+const cards = dashboard.cards; // Reactive array
 </script>
 
 <template>
-  <MoveableDashboard
-    :cards="dashboardCards"
-    @update:cards="handleCardsUpdated"
-  >
-    <!-- Card content -->
-  </MoveableDashboard>
+  <div>
+    <v-btn @click="addCard">Add Card</v-btn>
+    <p>Total Cards: {{ totalCards }}</p>
+
+    <MoveableDashboard :cards="cards">
+      <template #default="{ card }">
+        <DashboardCard :card="card">
+          <div class="pa-4">{{ card.header }}</div>
+        </DashboardCard>
+      </template>
+    </MoveableDashboard>
+  </div>
 </template>
 ```
 
 ## API Reference
+
+### Dashboard API (useDashboardAPI)
+
+The Dashboard API provides a powerful composable for managing dashboard state. See [doc/DASHBOARD_API.md](doc/DASHBOARD_API.md) for complete documentation.
+
+**Quick Reference:**
+
+```typescript
+const dashboard = useDashboardAPI(dashboardId?: string);
+
+// Reactive State
+dashboard.cards              // All cards
+dashboard.totalCards         // Card count
+dashboard.selectedCard       // Current selected card
+dashboard.editMode          // Edit mode status
+
+// Card Operations
+dashboard.addCard(card)                    // Add new card
+dashboard.updateCard(id, updates)          // Update card
+dashboard.deleteCard(id)                   // Delete card
+dashboard.duplicateCard(id)                // Duplicate card
+
+// Utility
+dashboard.export()                         // Export as JSON
+dashboard.import(json)                     // Import from JSON
+dashboard.debug()                          // Debug in console
+```
 
 ### MoveableDashboard Component
 
@@ -304,6 +364,8 @@ function handleCardsUpdated(cards) {
 | `resizable` | `Boolean` | `true` | Allow resizing cards |
 | `rotatable` | `Boolean` | `true` | Allow rotating cards |
 | `zoom` | `Number` | `1` | Zoom level for the dashboard |
+| `gridSize` | `Number` | `20` | Grid size for snapping |
+| `snapToGrid` | `Boolean` | `false` | Enable grid snapping |
 
 #### Events
 
@@ -418,11 +480,21 @@ This will create a `dist` folder with the compiled package.
 - Modern browsers (Chrome, Firefox, Safari, Edge)
 - Vue 3 compatible browsers
 
+## Documentation
+
+- [QUICKSTART.md](doc/QUICKSTART.md) - Quick start guide
+- [DASHBOARD_API.md](doc/DASHBOARD_API.md) - Complete Dashboard API reference
+- [EXAMPLES.md](doc/EXAMPLES.md) - Usage examples
+- [TROUBLESHOOTING.md](doc/TROUBLESHOOTING.md) - Common issues and solutions
+- [CHANGELOG.md](doc/CHANGELOG.md) - Version history
+
 ## Dependencies
 
 - Vue 3.x
 - Vuetify 3.x
 - vue3-moveable 0.28.x
+- Pinia 3.x
+- pinia-plugin-persistedstate 4.x
 
 ## Contributing
 

@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Grid snapping functionality for precise card alignment
+- Dark mode support across all components
+- Card edit functionality with input fields and buttons
+- Pinia state management with automatic localStorage persistence
+- Dashboard API composable (useDashboardAPI) for programmatic control
+- Multiple dashboard instances support with separate localStorage
+- Raw JSON data viewer page
+- Import/Export functionality for dashboard configurations
+- Browser console access to dashboard API
+
+### Fixed
+- Dashboard now fills full viewport width
+- Dark mode rendering issues
+- Layout flow and height distribution
+
+### Changed
+- Improved package build configuration
+- Enhanced TypeScript type definitions
+- Updated documentation structure
+
 ## [1.0.0] - 2025-10-16
 
 ### Added

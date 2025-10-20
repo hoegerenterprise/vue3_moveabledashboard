@@ -48,11 +48,13 @@ vue3_moveable_dashboard/
 - Drag and drop cards anywhere on the dashboard
 - Resize cards with corner handles
 - Rotate cards using rotation handle
+- Grid snapping for precise alignment
 - Select/deselect cards with visual feedback
 - Configurable edit mode (enable/disable interactions)
 - Scoped slot for custom card rendering
 - Rich event system for tracking interactions
 - Exposed methods for programmatic control
+- Dark mode support
 
 #### DashboardCard Component
 - Card container with optional header
@@ -88,15 +90,30 @@ Emitted events:
 - Support for multiple card types
 - Extensible architecture
 
-### 5. Demo Application
+### 5. State Management
+
+Pinia-based state management with:
+- Automatic localStorage persistence
+- Dashboard API composable (useDashboardAPI)
+- Multiple independent dashboard instances
+- Reactive state updates
+- Import/Export functionality
+- Browser console access for debugging
+
+### 6. Demo Application
 
 A fully functional demo page showcasing:
 - Multiple card types (Chart, Stats, List, Text)
 - Add/remove cards dynamically
 - Edit mode toggle
+- Grid snapping toggle
 - Card selection visualization
+- Card editing with inputs and buttons
 - Event logging
 - State persistence with localStorage
+- Multiple dashboard pages
+- JSON data viewer
+- Dark mode support
 
 ## Installation Methods
 
@@ -146,12 +163,18 @@ The styles are automatically included when importing the components.
 - `vue` ^3.0.0
 - `vuetify` ^3.0.0
 - `vue3-moveable` ^0.28.0
+- `pinia` ^3.0.0
+- `pinia-plugin-persistedstate` ^4.0.0
 
 ### Dev Dependencies
 - `@vitejs/plugin-vue` - Vue 3 support for Vite
 - `vite` - Build tool
 - `vue-tsc` - TypeScript support
 - `vite-plugin-vuetify` - Vuetify auto-import
+
+### Project Dependencies
+- `@mdi/font` - Material Design Icons
+- `vue-router` - Routing for multi-page demo
 
 ## Build Process
 
@@ -197,10 +220,14 @@ The package is based on the working implementation in `rm_web_ui` and includes:
 
 ## Documentation
 
-Three levels of documentation provided:
-1. **README.md** - Complete API reference and detailed guide
-2. **QUICKSTART.md** - Get started in 5 minutes
-3. **EXAMPLES.md** - 8+ practical usage examples
+Complete documentation provided:
+1. **README.md** - Main package documentation with overview and setup
+2. **doc/QUICKSTART.md** - Get started in 5 minutes
+3. **doc/DASHBOARD_API.md** - Complete Dashboard API reference
+4. **doc/EXAMPLES.md** - 8+ practical usage examples
+5. **doc/TROUBLESHOOTING.md** - Common issues and solutions
+6. **doc/PACKAGE_SUMMARY.md** - This file - package overview
+7. **doc/CHANGELOG.md** - Version history and release notes
 
 ## Testing the Package
 
@@ -239,17 +266,27 @@ Built-in support for:
 - Edge (latest)
 - All Vue 3 compatible browsers
 
+## Recent Enhancements
+
+Recently added features:
+- ✅ Grid snapping with configurable grid size
+- ✅ Dark mode support
+- ✅ Pinia state management with persistence
+- ✅ Dashboard API composable
+- ✅ Multiple dashboard instances
+- ✅ Import/Export functionality
+- ✅ Card editing capabilities
+- ✅ JSON data viewer
+
 ## Future Enhancement Possibilities
 
-While the package is fully functional, potential additions could include:
-- Grid snapping
+Potential future additions could include:
 - Card grouping
 - Undo/redo functionality
 - Keyboard shortcuts
 - Touch device optimization
 - More card templates
 - Layout presets
-- Export/import layouts
 
 ## License
 
