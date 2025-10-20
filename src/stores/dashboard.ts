@@ -26,6 +26,7 @@ export interface DashboardState {
  * - TypeScript support with full type safety
  * - Vue DevTools integration for debugging
  */
+// @ts-ignore - pinia-plugin-persistedstate types
 export const useDashboardStore = defineStore('dashboard', {
   state: (): DashboardState => ({
     cards: [],
@@ -195,7 +196,8 @@ export const useDashboardStore = defineStore('dashboard', {
     deleteCards(cardIds: string[]): number {
       let deletedCount = 0;
       cardIds.forEach(cardId => {
-        if (this.deleteCard(cardId)) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((this as any).deleteCard(cardId)) {
           deletedCount++;
         }
       });
@@ -235,7 +237,7 @@ export const useDashboardStore = defineStore('dashboard', {
     toggleEditMode() {
       this.editMode = !this.editMode;
       if (!this.editMode) {
-        this.deselectCard();
+        (this as any).deselectCard();
       }
     },
 
@@ -245,7 +247,7 @@ export const useDashboardStore = defineStore('dashboard', {
     setEditMode(enabled: boolean) {
       this.editMode = enabled;
       if (!enabled) {
-        this.deselectCard();
+        (this as any).deselectCard();
       }
     },
 
@@ -354,6 +356,7 @@ export const useDashboardStore = defineStore('dashboard', {
   },
 
   // Automatically persist to localStorage
+  // @ts-ignore - pinia-plugin-persistedstate types
   persist: {
     key: 'vue3-moveable-dashboard',
     storage: localStorage,
@@ -365,6 +368,7 @@ export const useDashboardStore = defineStore('dashboard', {
  * Create a dashboard store with a custom ID for multiple dashboard instances
  */
 export function createDashboardStore(dashboardId: string) {
+  // @ts-ignore - pinia-plugin-persistedstate types
   return defineStore(`dashboard-${dashboardId}`, {
     state: (): DashboardState => ({
       cards: [],
@@ -492,7 +496,8 @@ export function createDashboardStore(dashboardId: string) {
       deleteCards(cardIds: string[]): number {
         let deletedCount = 0;
         cardIds.forEach(cardId => {
-          if (this.deleteCard(cardId)) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          if ((this as any).deleteCard(cardId)) {
             deletedCount++;
           }
         });
@@ -520,14 +525,14 @@ export function createDashboardStore(dashboardId: string) {
       toggleEditMode() {
         this.editMode = !this.editMode;
         if (!this.editMode) {
-          this.deselectCard();
+          (this as any).deselectCard();
         }
       },
 
       setEditMode(enabled: boolean) {
         this.editMode = enabled;
         if (!enabled) {
-          this.deselectCard();
+          (this as any).deselectCard();
         }
       },
 
@@ -605,6 +610,7 @@ export function createDashboardStore(dashboardId: string) {
       }
     },
 
+    // @ts-ignore - pinia-plugin-persistedstate types
     persist: {
       key: `vue3-moveable-dashboard-${dashboardId}`,
       storage: localStorage,

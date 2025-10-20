@@ -25,53 +25,57 @@ export function useDashboardAPI(dashboardId?: string) {
     ? createDashboardStore(dashboardId)()
     : useDashboardStore();
 
+  // Type assertion to work around Pinia's type inference limitations with Options API stores
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const typedStore = store as any;
+
   return {
     // ==================== STATE (Reactive) ====================
 
     /**
      * All dashboard cards (reactive)
      */
-    cards: computed(() => store.cards),
+    cards: computed(() => typedStore.cards),
 
     /**
      * Cards sorted by z-index (reactive)
      */
-    sortedCards: computed(() => store.sortedCards),
+    sortedCards: computed(() => typedStore.sortedCards),
 
     /**
      * Currently selected card ID (reactive)
      */
-    selectedCardId: computed(() => store.selectedCardId),
+    selectedCardId: computed(() => typedStore.selectedCardId),
 
     /**
      * Currently selected card object (reactive)
      */
-    selectedCard: computed(() => store.selectedCard),
+    selectedCard: computed(() => typedStore.selectedCard),
 
     /**
      * Edit mode status (reactive)
      */
-    editMode: computed(() => store.editMode),
+    editMode: computed(() => typedStore.editMode),
 
     /**
      * Total number of cards (reactive)
      */
-    totalCards: computed(() => store.totalCards),
+    totalCards: computed(() => typedStore.totalCards),
 
     /**
      * Grid enabled status (reactive)
      */
-    gridEnabled: computed(() => store.gridEnabled),
+    gridEnabled: computed(() => typedStore.gridEnabled),
 
     /**
      * Grid size in pixels (reactive)
      */
-    gridSize: computed(() => store.gridSize),
+    gridSize: computed(() => typedStore.gridSize),
 
     /**
      * Snap to grid enabled status (reactive)
      */
-    snapToGrid: computed(() => store.snapToGrid),
+    snapToGrid: computed(() => typedStore.snapToGrid),
 
     // ==================== CARD OPERATIONS ====================
 
@@ -93,7 +97,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * ```
      */
     addCard(card: Partial<IMoveableDashboardContainer>): IMoveableDashboardContainer {
-      return store.addCard(card);
+      return typedStore.addCard(card);
     },
 
     /**
@@ -103,7 +107,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * @returns The card object or undefined if not found
      */
     getCard(cardId: string): IMoveableDashboardContainer | undefined {
-      return store.getCardById(cardId);
+      return typedStore.getCardById(cardId);
     },
 
     /**
@@ -113,7 +117,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * @returns Array of cards matching the type
      */
     getCardsByType(type: string): IMoveableDashboardContainer[] {
-      return store.getCardsByType(type);
+      return typedStore.getCardsByType(type);
     },
 
     /**
@@ -129,7 +133,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * ```
      */
     updateCardPosition(cardId: string, position: { x: number; y: number }): boolean {
-      return store.updateCardPosition(cardId, position);
+      return typedStore.updateCardPosition(cardId, position);
     },
 
     /**
@@ -140,7 +144,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * @returns true if successful, false if card not found
      */
     updateCardSize(cardId: string, size: { width: number }): boolean {
-      return store.updateCardSize(cardId, size);
+      return typedStore.updateCardSize(cardId, size);
     },
 
     /**
@@ -151,7 +155,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * @returns true if successful, false if card not found
      */
     updateCardRotation(cardId: string, rotation: number): boolean {
-      return store.updateCardRotation(cardId, rotation);
+      return typedStore.updateCardRotation(cardId, rotation);
     },
 
     /**
@@ -171,7 +175,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * ```
      */
     updateCard(cardId: string, updates: Partial<IMoveableDashboardContainer>): boolean {
-      return store.updateCard(cardId, updates);
+      return typedStore.updateCard(cardId, updates);
     },
 
     /**
@@ -181,7 +185,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * @returns true if deleted, false if not found
      */
     deleteCard(cardId: string): boolean {
-      return store.deleteCard(cardId);
+      return typedStore.deleteCard(cardId);
     },
 
     /**
@@ -191,7 +195,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * @returns Number of cards successfully deleted
      */
     deleteCards(cardIds: string[]): number {
-      return store.deleteCards(cardIds);
+      return typedStore.deleteCards(cardIds);
     },
 
     /**
@@ -210,7 +214,7 @@ export function useDashboardAPI(dashboardId?: string) {
       cardId: string,
       offset?: { x: number; y: number }
     ): IMoveableDashboardContainer | null {
-      return store.duplicateCard(cardId, offset);
+      return typedStore.duplicateCard(cardId, offset);
     },
 
     /**
@@ -220,14 +224,14 @@ export function useDashboardAPI(dashboardId?: string) {
      * @returns true if card exists, false otherwise
      */
     hasCard(cardId: string): boolean {
-      return store.hasCard(cardId);
+      return typedStore.hasCard(cardId);
     },
 
     /**
      * Clear all cards from the dashboard
      */
     clearAllCards(): void {
-      store.clearAllCards();
+      typedStore.clearAllCards();
     },
 
     // ==================== SELECTION ====================
@@ -239,14 +243,14 @@ export function useDashboardAPI(dashboardId?: string) {
      * @returns true if selected, false if card not found
      */
     selectCard(cardId: string): boolean {
-      return store.selectCard(cardId);
+      return typedStore.selectCard(cardId);
     },
 
     /**
      * Deselect current card
      */
     deselectCard(): void {
-      store.deselectCard();
+      typedStore.deselectCard();
     },
 
     // ==================== EDIT MODE ====================
@@ -255,7 +259,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * Toggle edit mode on/off
      */
     toggleEditMode(): void {
-      store.toggleEditMode();
+      typedStore.toggleEditMode();
     },
 
     /**
@@ -264,7 +268,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * @param enabled - true to enable, false to disable
      */
     setEditMode(enabled: boolean): void {
-      store.setEditMode(enabled);
+      typedStore.setEditMode(enabled);
     },
 
     // ==================== GRID OPERATIONS ====================
@@ -273,7 +277,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * Toggle grid visibility
      */
     toggleGrid(): void {
-      store.toggleGrid();
+      typedStore.toggleGrid();
     },
 
     /**
@@ -282,7 +286,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * @param enabled - true to show grid, false to hide
      */
     setGridEnabled(enabled: boolean): void {
-      store.setGridEnabled(enabled);
+      typedStore.setGridEnabled(enabled);
     },
 
     /**
@@ -296,14 +300,14 @@ export function useDashboardAPI(dashboardId?: string) {
      * ```
      */
     setGridSize(size: number): void {
-      store.setGridSize(size);
+      typedStore.setGridSize(size);
     },
 
     /**
      * Toggle snap-to-grid functionality
      */
     toggleSnapToGrid(): void {
-      store.toggleSnapToGrid();
+      typedStore.toggleSnapToGrid();
     },
 
     /**
@@ -312,7 +316,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * @param enabled - true to enable snapping, false to disable
      */
     setSnapToGrid(enabled: boolean): void {
-      store.setSnapToGrid(enabled);
+      typedStore.setSnapToGrid(enabled);
     },
 
     /**
@@ -327,7 +331,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * ```
      */
     snapToGridValue(value: number): number {
-      return store.snapToGridValue(value);
+      return typedStore.snapToGridValue(value);
     },
 
     // ==================== INITIALIZATION ====================
@@ -346,7 +350,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * ```
      */
     initialize(cards: IMoveableDashboardContainer[]): void {
-      store.initializeCards(cards);
+      typedStore.initializeCards(cards);
     },
 
     /**
@@ -355,7 +359,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * @param defaultCards - Default cards to reset to
      */
     resetToDefaults(defaultCards: IMoveableDashboardContainer[]): void {
-      store.resetToDefaults(defaultCards);
+      typedStore.resetToDefaults(defaultCards);
     },
 
     // ==================== IMPORT / EXPORT ====================
@@ -373,7 +377,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * ```
      */
     export(): string {
-      return store.exportDashboard();
+      return typedStore.exportDashboard();
     },
 
     /**
@@ -391,7 +395,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * ```
      */
     import(jsonString: string): boolean {
-      return store.importDashboard(jsonString);
+      return typedStore.importDashboard(jsonString);
     },
 
     // ==================== DEBUGGING ====================
@@ -402,7 +406,7 @@ export function useDashboardAPI(dashboardId?: string) {
      * @returns The Pinia store instance
      */
     getStore() {
-      return store;
+      return typedStore;
     },
 
     /**
@@ -410,14 +414,14 @@ export function useDashboardAPI(dashboardId?: string) {
      */
     debug(): void {
       console.group('Dashboard State');
-      console.log('Cards:', store.cards);
-      console.log('Total Cards:', store.totalCards);
-      console.log('Selected Card ID:', store.selectedCardId);
-      console.log('Selected Card:', store.selectedCard);
-      console.log('Edit Mode:', store.editMode);
-      console.log('Grid Enabled:', store.gridEnabled);
-      console.log('Grid Size:', store.gridSize);
-      console.log('Snap to Grid:', store.snapToGrid);
+      console.log(typedStore.cards);
+      console.log(typedStore.totalCards);
+      console.log(typedStore.selectedCardId);
+      console.log(typedStore.selectedCard);
+      console.log(typedStore.editMode);
+      console.log(typedStore.gridEnabled);
+      console.log(typedStore.gridSize);
+      console.log('Snap to Grid:', typedStore.snapToGrid);
       console.groupEnd();
     }
   };

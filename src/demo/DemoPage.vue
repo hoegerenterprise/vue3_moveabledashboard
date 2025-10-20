@@ -5,7 +5,7 @@
       <v-app-bar-title>Vue3 Moveable Dashboard - Demo</v-app-bar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click="toggleEditMode">
-        <v-icon>{{ editMode ? 'mdi-lock-open' : 'mdi-lock' }}</v-icon>
+        <v-icon>{{ dashboard.editMode.value ? 'mdi-lock-open' : 'mdi-lock' }}</v-icon>
       </v-btn>
       <v-btn icon @click="addNewCard">
         <v-icon>mdi-plus</v-icon>
