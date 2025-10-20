@@ -90,6 +90,9 @@
             <template v-else-if="card.type === 'text'">
               <TextCard :card="card" />
             </template>
+            <template v-else-if="card.type === 'form'">
+              <FormCard :card="card" />
+            </template>
             <template v-else>
               <DefaultCard :card="card" :is-selected="isSelected" />
             </template>
@@ -119,6 +122,7 @@ import ChartCard from '../demo/cards/ChartCard.vue';
 import StatsCard from '../demo/cards/StatsCard.vue';
 import ListCard from '../demo/cards/ListCard.vue';
 import TextCard from '../demo/cards/TextCard.vue';
+import FormCard from '../demo/cards/FormCard.vue';
 import DefaultCard from '../demo/cards/DefaultCard.vue';
 
 const dashboardRef = ref<InstanceType<typeof MoveableDashboard> | null>(null);
