@@ -217,19 +217,16 @@ onMounted(() => {
 .dashboard-page {
   display: flex;
   flex-direction: column;
-  width: 100%;
   height: 100%;
   overflow: hidden;
 }
 
 .toolbar {
   flex-shrink: 0;
-  width: 100%;
 }
 
 .dashboard-wrapper {
   flex: 1;
-  width: 100%;
   overflow: hidden;
   background-color: #f0f8ff;
   position: relative;
