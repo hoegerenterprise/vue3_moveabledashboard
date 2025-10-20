@@ -3,7 +3,10 @@ import './style.css'
 import App from './App.vue'
 
 // Vuetify CSS
-import 'vuetify/styles'  // <-- Add this line to import Vuetify styles globally
+import 'vuetify/styles'
+
+// Material Design Icons
+import '@mdi/font/css/materialdesignicons.css'
 
 // Vuetify
 import { createVuetify } from 'vuetify'
