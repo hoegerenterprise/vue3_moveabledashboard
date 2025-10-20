@@ -9,6 +9,9 @@ export interface DashboardState {
   editMode: boolean;
   selectedCardId: string;
   cardCounter: number;
+  gridEnabled: boolean;
+  gridSize: number;
+  snapToGrid: boolean;
 }
 
 /**
@@ -28,7 +31,10 @@ export const useDashboardStore = defineStore('dashboard', {
     cards: [],
     editMode: true,
     selectedCardId: '',
-    cardCounter: 1
+    cardCounter: 1,
+    gridEnabled: false,
+    gridSize: 20,
+    snapToGrid: false
   }),
 
   getters: {
@@ -299,6 +305,51 @@ export const useDashboardStore = defineStore('dashboard', {
         console.error('Failed to import dashboard:', e);
         return false;
       }
+    },
+
+    /**
+     * Toggle grid visibility
+     */
+    toggleGrid() {
+      this.gridEnabled = !this.gridEnabled;
+    },
+
+    /**
+     * Set grid visibility
+     */
+    setGridEnabled(enabled: boolean) {
+      this.gridEnabled = enabled;
+    },
+
+    /**
+     * Set grid size
+     */
+    setGridSize(size: number) {
+      this.gridSize = size;
+    },
+
+    /**
+     * Toggle snap to grid
+     */
+    toggleSnapToGrid() {
+      this.snapToGrid = !this.snapToGrid;
+    },
+
+    /**
+     * Set snap to grid
+     */
+    setSnapToGrid(enabled: boolean) {
+      this.snapToGrid = enabled;
+    },
+
+    /**
+     * Snap coordinate to grid
+     */
+    snapToGridValue(value: number): number {
+      if (this.snapToGrid) {
+        return Math.round(value / this.gridSize) * this.gridSize;
+      }
+      return value;
     }
   },
 
@@ -306,7 +357,7 @@ export const useDashboardStore = defineStore('dashboard', {
   persist: {
     key: 'vue3-moveable-dashboard',
     storage: localStorage,
-    paths: ['cards', 'editMode', 'cardCounter'] // Only persist these fields
+    paths: ['cards', 'editMode', 'cardCounter', 'gridEnabled', 'gridSize', 'snapToGrid'] // Only persist these fields
   }
 });
 
@@ -319,7 +370,10 @@ export function createDashboardStore(dashboardId: string) {
       cards: [],
       editMode: true,
       selectedCardId: '',
-      cardCounter: 1
+      cardCounter: 1,
+      gridEnabled: false,
+      gridSize: 20,
+      snapToGrid: false
     }),
 
     getters: {
@@ -521,13 +575,40 @@ export function createDashboardStore(dashboardId: string) {
           console.error('Failed to import dashboard:', e);
           return false;
         }
+      },
+
+      toggleGrid() {
+        this.gridEnabled = !this.gridEnabled;
+      },
+
+      setGridEnabled(enabled: boolean) {
+        this.gridEnabled = enabled;
+      },
+
+      setGridSize(size: number) {
+        this.gridSize = size;
+      },
+
+      toggleSnapToGrid() {
+        this.snapToGrid = !this.snapToGrid;
+      },
+
+      setSnapToGrid(enabled: boolean) {
+        this.snapToGrid = enabled;
+      },
+
+      snapToGridValue(value: number): number {
+        if (this.snapToGrid) {
+          return Math.round(value / this.gridSize) * this.gridSize;
+        }
+        return value;
       }
     },
 
     persist: {
       key: `vue3-moveable-dashboard-${dashboardId}`,
       storage: localStorage,
-      paths: ['cards', 'editMode', 'cardCounter']
+      paths: ['cards', 'editMode', 'cardCounter', 'gridEnabled', 'gridSize', 'snapToGrid']
     }
   });
 }

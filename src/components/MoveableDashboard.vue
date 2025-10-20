@@ -1,6 +1,12 @@
 <template>
   <div class="moveable-dashboard-container">
     <div class="viewport" @click="selectNone()">
+      <!-- Grid Overlay -->
+      <GridOverlay
+        :enabled="gridEnabled"
+        :grid-size="gridSize"
+      />
+
       <!-- Render each card on the dashboard -->
       <div
         v-for="dashboardCard in cards"
@@ -36,6 +42,10 @@
         :draggable="draggable"
         :rotatable="rotatable"
         :resizable="resizable"
+        :snappable="snapToGrid && gridEnabled"
+        :snapGridWidth="gridSize"
+        :snapGridHeight="gridSize"
+        :isDisplaySnapDigit="false"
         @drag="onDrag"
         @drag-end="onDragEnd"
         @resize="onResize"
@@ -52,6 +62,7 @@ import { ref, nextTick, PropType } from 'vue';
 import { IMoveableDashboardContainer } from '../types/interfaces';
 import Moveable from 'vue3-moveable';
 import DashboardCard from './DashboardCard.vue';
+import GridOverlay from './GridOverlay.vue';
 
 /**
  * MoveableDashboard Component
@@ -103,6 +114,18 @@ const props = defineProps({
   zoom: {
     type: Number,
     default: 1
+  },
+  gridEnabled: {
+    type: Boolean,
+    default: false
+  },
+  gridSize: {
+    type: Number,
+    default: 20
+  },
+  snapToGrid: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -117,6 +140,16 @@ const emit = defineEmits<{
 
 const currentTargetID = ref<string>('');
 const containerRefs = ref<HTMLElement[]>([]);
+
+/**
+ * Snap a value to the grid if snap-to-grid is enabled
+ */
+function snapValue(value: number): number {
+  if (props.snapToGrid && props.gridEnabled) {
+    return Math.round(value / props.gridSize) * props.gridSize;
+  }
+  return value;
+}
 
 /**
  * Parse transform string to extract x and y coordinates
@@ -184,7 +217,14 @@ const onDragEnd = (e: any) => {
   const item = findItem(e.target);
   if (!item) return;
 
-  e.target.style.transform = e.lastEvent.transform;
+  // Apply snap-to-grid if enabled
+  item.x = snapValue(item.x);
+  item.y = snapValue(item.y);
+
+  // Update transform to snapped position
+  const snappedTransform = `translate(${item.x}px, ${item.y}px)` +
+    (item.rotate ? ` rotate(${item.rotate}deg)` : '');
+  e.target.style.transform = snappedTransform;
 
   emit('card-moved', item.id, { x: item.x, y: item.y });
   emit('update:cards', props.cards);

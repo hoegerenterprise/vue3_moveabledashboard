@@ -58,6 +58,21 @@ export function useDashboardAPI(dashboardId?: string) {
      */
     totalCards: computed(() => store.totalCards),
 
+    /**
+     * Grid enabled status (reactive)
+     */
+    gridEnabled: computed(() => store.gridEnabled),
+
+    /**
+     * Grid size in pixels (reactive)
+     */
+    gridSize: computed(() => store.gridSize),
+
+    /**
+     * Snap to grid enabled status (reactive)
+     */
+    snapToGrid: computed(() => store.snapToGrid),
+
     // ==================== CARD OPERATIONS ====================
 
     /**
@@ -252,6 +267,69 @@ export function useDashboardAPI(dashboardId?: string) {
       store.setEditMode(enabled);
     },
 
+    // ==================== GRID OPERATIONS ====================
+
+    /**
+     * Toggle grid visibility
+     */
+    toggleGrid(): void {
+      store.toggleGrid();
+    },
+
+    /**
+     * Set grid visibility explicitly
+     *
+     * @param enabled - true to show grid, false to hide
+     */
+    setGridEnabled(enabled: boolean): void {
+      store.setGridEnabled(enabled);
+    },
+
+    /**
+     * Set grid size in pixels
+     *
+     * @param size - Grid size (e.g., 20, 50)
+     *
+     * @example
+     * ```typescript
+     * dashboard.setGridSize(50); // 50px grid
+     * ```
+     */
+    setGridSize(size: number): void {
+      store.setGridSize(size);
+    },
+
+    /**
+     * Toggle snap-to-grid functionality
+     */
+    toggleSnapToGrid(): void {
+      store.toggleSnapToGrid();
+    },
+
+    /**
+     * Set snap-to-grid explicitly
+     *
+     * @param enabled - true to enable snapping, false to disable
+     */
+    setSnapToGrid(enabled: boolean): void {
+      store.setSnapToGrid(enabled);
+    },
+
+    /**
+     * Snap a coordinate value to the grid
+     *
+     * @param value - The coordinate value to snap
+     * @returns Snapped value if snap-to-grid is enabled, original value otherwise
+     *
+     * @example
+     * ```typescript
+     * const snappedX = dashboard.snapToGridValue(123); // Returns 120 if gridSize is 20
+     * ```
+     */
+    snapToGridValue(value: number): number {
+      return store.snapToGridValue(value);
+    },
+
     // ==================== INITIALIZATION ====================
 
     /**
@@ -337,6 +415,9 @@ export function useDashboardAPI(dashboardId?: string) {
       console.log('Selected Card ID:', store.selectedCardId);
       console.log('Selected Card:', store.selectedCard);
       console.log('Edit Mode:', store.editMode);
+      console.log('Grid Enabled:', store.gridEnabled);
+      console.log('Grid Size:', store.gridSize);
+      console.log('Snap to Grid:', store.snapToGrid);
       console.groupEnd();
     }
   };

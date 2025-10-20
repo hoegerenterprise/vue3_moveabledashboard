@@ -13,14 +13,36 @@
           Cards: {{ dashboard.totalCards.value }}
         </v-chip>
 
+        <v-btn
+          icon
+          size="small"
+          @click="toggleGrid"
+          :color="dashboard.gridEnabled.value ? 'success' : undefined"
+        >
+          <v-icon>mdi-grid</v-icon>
+          <v-tooltip activator="parent" location="bottom">Toggle Grid</v-tooltip>
+        </v-btn>
+        <v-btn
+          icon
+          size="small"
+          @click="toggleSnapToGrid"
+          :color="dashboard.snapToGrid.value ? 'success' : undefined"
+          :disabled="!dashboard.gridEnabled.value"
+        >
+          <v-icon>mdi-magnet</v-icon>
+          <v-tooltip activator="parent" location="bottom">Snap to Grid</v-tooltip>
+        </v-btn>
         <v-btn icon size="small" @click="toggleEditMode">
           <v-icon>{{ dashboard.editMode.value ? 'mdi-lock-open' : 'mdi-lock' }}</v-icon>
+          <v-tooltip activator="parent" location="bottom">{{ dashboard.editMode.value ? 'Lock' : 'Unlock' }}</v-tooltip>
         </v-btn>
         <v-btn icon size="small" @click="addNewCard">
           <v-icon>mdi-plus</v-icon>
+          <v-tooltip activator="parent" location="bottom">Add Card</v-tooltip>
         </v-btn>
         <v-btn icon size="small" @click="resetCards">
           <v-icon>mdi-refresh</v-icon>
+          <v-tooltip activator="parent" location="bottom">Reset</v-tooltip>
         </v-btn>
       </v-toolbar>
     </div>
@@ -35,6 +57,9 @@
         :resizable="true"
         :rotatable="true"
         :zoom="1"
+        :grid-enabled="dashboard.gridEnabled.value"
+        :grid-size="dashboard.gridSize.value"
+        :snap-to-grid="dashboard.snapToGrid.value"
         @card-selected="onCardSelected"
         @card-deselected="onCardDeselected"
         @card-moved="onCardMoved"
@@ -167,6 +192,14 @@ function duplicateCard(cardId: string) {
 
 function resetCards() {
   dashboard.resetToDefaults(DEFAULT_CARDS);
+}
+
+function toggleGrid() {
+  dashboard.toggleGrid();
+}
+
+function toggleSnapToGrid() {
+  dashboard.toggleSnapToGrid();
 }
 
 function onCardSelected(cardId: string) {
