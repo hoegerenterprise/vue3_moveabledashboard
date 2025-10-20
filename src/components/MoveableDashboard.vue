@@ -14,23 +14,28 @@
         :data-target-id="dashboardCard.id"
         :class="{
           'dashboard-item': true,
-          'target': dashboardCard.id === currentTargetID,
-          'selected': dashboardCard.id === currentTargetID
+          'target': dashboardCard.id === currentTargetID && enableEdit,
+          'selected': dashboardCard.id === currentTargetID && enableEdit,
+          'edit-mode': enableEdit,
+          'view-mode': !enableEdit
         }"
         :style="getItemStyle(dashboardCard)"
         @click.stop="selectItem($event, dashboardCard)"
         ref="containerRefs"
       >
-        <!-- Use scoped slot to allow parent to customize card rendering -->
-        <slot :card="dashboardCard" :is-selected="dashboardCard.id === currentTargetID">
-          <!-- Default rendering if no slot provided -->
-          <DashboardCard :card="dashboardCard">
-            <div class="default-card-content">
-              <h3>{{ dashboardCard.header || 'Card ' + dashboardCard.id }}</h3>
-              <p>Card ID: {{ dashboardCard.id }}</p>
-            </div>
-          </DashboardCard>
-        </slot>
+        <!-- Card content wrapper with pointer-events control -->
+        <div :class="{ 'card-content-wrapper': true, 'disable-interactions': enableEdit }">
+          <!-- Use scoped slot to allow parent to customize card rendering -->
+          <slot :card="dashboardCard" :is-selected="dashboardCard.id === currentTargetID">
+            <!-- Default rendering if no slot provided -->
+            <DashboardCard :card="dashboardCard">
+              <div class="default-card-content">
+                <h3>{{ dashboardCard.header || 'Card ' + dashboardCard.id }}</h3>
+                <p>Card ID: {{ dashboardCard.id }}</p>
+              </div>
+            </DashboardCard>
+          </slot>
+        </div>
       </div>
 
       <!-- Moveable component for drag, resize, rotate -->
@@ -352,9 +357,29 @@ defineExpose({
   transition: box-shadow 0.2s ease;
 }
 
+.dashboard-item.edit-mode {
+  cursor: move;
+}
+
+.dashboard-item.view-mode {
+  cursor: default;
+}
+
 .dashboard-item.selected {
   box-shadow: 0 0 0 2px #1976d2;
   z-index: 1000;
+}
+
+/* Wrapper for card content */
+.card-content-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+/* Disable all interactions with card content in edit mode */
+.card-content-wrapper.disable-interactions {
+  pointer-events: none;
+  user-select: none;
 }
 
 .default-card-content {

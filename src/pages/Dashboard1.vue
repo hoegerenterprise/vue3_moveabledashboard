@@ -32,9 +32,16 @@
           <v-icon>mdi-magnet</v-icon>
           <v-tooltip activator="parent" location="bottom">Snap to Grid</v-tooltip>
         </v-btn>
-        <v-btn icon size="small" @click="toggleEditMode">
-          <v-icon>{{ dashboard.editMode.value ? 'mdi-lock-open' : 'mdi-lock' }}</v-icon>
-          <v-tooltip activator="parent" location="bottom">{{ dashboard.editMode.value ? 'Lock' : 'Unlock' }}</v-tooltip>
+        <v-btn
+          icon
+          size="small"
+          @click="toggleEditMode"
+          :color="dashboard.editMode.value ? 'warning' : undefined"
+        >
+          <v-icon>{{ dashboard.editMode.value ? 'mdi-pencil' : 'mdi-eye' }}</v-icon>
+          <v-tooltip activator="parent" location="bottom">
+            {{ dashboard.editMode.value ? 'Edit Mode (Click to View)' : 'View Mode (Click to Edit)' }}
+          </v-tooltip>
         </v-btn>
         <v-btn icon size="small" @click="addNewCard">
           <v-icon>mdi-plus</v-icon>
