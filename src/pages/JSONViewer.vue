@@ -434,7 +434,8 @@ onMounted(() => {
 
 <style scoped>
 .json-viewer {
-  background-color: #f5f5f5;
+  background-color: rgb(var(--v-theme-surface-variant));
+  color: rgb(var(--v-theme-on-surface));
   padding: 16px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
@@ -442,7 +443,7 @@ onMounted(() => {
   overflow-x: auto;
   max-height: 500px;
   overflow-y: auto;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
 }
 
 .json-viewer.small {
@@ -451,7 +452,8 @@ onMounted(() => {
 }
 
 code {
-  background-color: #f5f5f5;
+  background-color: rgb(var(--v-theme-surface-variant));
+  color: rgb(var(--v-theme-on-surface));
   padding: 2px 6px;
   border-radius: 3px;
   font-family: 'Courier New', monospace;
