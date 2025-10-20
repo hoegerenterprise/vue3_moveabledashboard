@@ -251,7 +251,6 @@ onMounted(() => {
 .dashboard-wrapper {
   flex: 1;
   overflow: hidden;
-  background-color: #f5f5f5;
   position: relative;
 }
 </style>

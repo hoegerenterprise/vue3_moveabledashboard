@@ -2,11 +2,11 @@
   <div class="stats-card pa-4">
     <v-row>
       <v-col cols="6" v-for="stat in stats" :key="stat.label">
-        <div class="stat-item">
+        <v-sheet class="stat-item" elevation="1" rounded>
           <v-icon :color="stat.color" size="32">{{ stat.icon }}</v-icon>
           <p class="text-h4 mt-2 mb-0">{{ stat.value }}</p>
-          <p class="text-caption text-grey">{{ stat.label }}</p>
-        </div>
+          <p class="text-caption text-medium-emphasis">{{ stat.label }}</p>
+        </v-sheet>
       </v-col>
     </v-row>
   </div>
@@ -39,13 +39,10 @@ const stats = [
 .stat-item {
   text-align: center;
   padding: 16px;
-  border-radius: 8px;
-  background-color: #f5f5f5;
   transition: all 0.3s ease;
 }
 
 .stat-item:hover {
-  background-color: #e0e0e0;
   transform: translateY(-2px);
 }
 </style>
