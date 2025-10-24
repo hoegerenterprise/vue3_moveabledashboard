@@ -70,7 +70,7 @@
               Dashboard Stats
             </v-list-item-title>
             <v-list-item-subtitle class="text-caption">
-              D1: {{ dashboard1Cards }} | D2: {{ dashboard2Cards }} | D3: {{ dashboard3Cards }}
+              D1: {{ dashboard1Cards }} | D2: {{ dashboard2Cards }}
             </v-list-item-subtitle>
           </v-list-item>
         </div>
@@ -101,10 +101,6 @@
         <v-tab value="dashboard2" @click="navigateTo('/dashboard2')">
           <v-icon class="mr-2">mdi-chart-line</v-icon>
           Dashboard 2
-        </v-tab>
-        <v-tab value="dashboard3" @click="navigateTo('/dashboard3')">
-          <v-icon class="mr-2">mdi-window-restore</v-icon>
-          Dashboard 3
         </v-tab>
         <v-tab value="json" @click="navigateTo('/json')">
           <v-icon class="mr-2">mdi-code-json</v-icon>
@@ -151,9 +147,6 @@
           <v-chip size="x-small" color="warning" variant="outlined" class="mx-1">
             Dashboard 2: {{ dashboard2Cards }}
           </v-chip>
-          <v-chip size="x-small" color="accent" variant="outlined" class="mx-1">
-            Dashboard 3: {{ dashboard3Cards }}
-          </v-chip>
         </v-col>
         <v-col cols="12" md="4" class="text-center text-md-right">
           <span class="text-caption">
@@ -181,12 +174,10 @@ const rail = ref(false);
 // Get dashboard instances for stats
 const dashboard1 = useDashboardAPI('dashboard-1');
 const dashboard2 = useDashboardAPI('dashboard-2');
-const dashboard3 = useDashboardAPI('dashboard-3');
 
 const dashboard1Cards = computed(() => dashboard1.totalCards.value);
 const dashboard2Cards = computed(() => dashboard2.totalCards.value);
-const dashboard3Cards = computed(() => dashboard3.totalCards.value);
-const totalCards = computed(() => dashboard1Cards.value + dashboard2Cards.value + dashboard3Cards.value);
+const totalCards = computed(() => dashboard1Cards.value + dashboard2Cards.value);
 
 // Current route info
 const currentRoute = computed(() => route.name as string);
@@ -196,7 +187,6 @@ const currentTab = ref('dashboard1');
 watch(() => route.name, (newRoute) => {
   if (newRoute === 'Dashboard1') currentTab.value = 'dashboard1';
   else if (newRoute === 'Dashboard2') currentTab.value = 'dashboard2';
-  else if (newRoute === 'Dashboard3') currentTab.value = 'dashboard3';
   else if (newRoute === 'JSONViewer') currentTab.value = 'json';
 });
 
@@ -206,8 +196,6 @@ const currentTitle = computed(() => {
       return 'Dashboard 1 - Main Workspace';
     case 'Dashboard2':
       return 'Dashboard 2 - Analytics';
-    case 'Dashboard3':
-      return 'Dashboard 3 - Floating Cards';
     case 'JSONViewer':
       return 'JSON Data Viewer';
     default:
@@ -221,8 +209,6 @@ const currentIcon = computed(() => {
       return 'mdi-view-dashboard';
     case 'Dashboard2':
       return 'mdi-chart-line';
-    case 'Dashboard3':
-      return 'mdi-window-restore';
     case 'JSONViewer':
       return 'mdi-code-json';
     default:
