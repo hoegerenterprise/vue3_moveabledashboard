@@ -45,16 +45,6 @@
           color="secondary"
         ></v-list-item>
 
-        <v-list-item
-          prepend-icon="mdi-window-restore"
-          title="Dashboard 3"
-          subtitle="Floating Cards"
-          value="dashboard3"
-          :active="currentRoute === 'Dashboard3'"
-          @click="navigateTo('/dashboard3')"
-          color="accent"
-        ></v-list-item>
-
         <v-divider class="my-2"></v-divider>
 
         <v-list-item
