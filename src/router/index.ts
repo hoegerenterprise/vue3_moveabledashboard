@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Dashboard1 from '../pages/Dashboard1.vue';
 import Dashboard2 from '../pages/Dashboard2.vue';
+import Dashboard3 from '../pages/Dashboard3.vue';
 import JSONViewer from '../pages/JSONViewer.vue';
 
 const routes = [
@@ -22,6 +23,14 @@ const routes = [
     component: Dashboard2,
     meta: {
       title: 'Dashboard 2 - Analytics'
+    }
+  },
+  {
+    path: '/dashboard3',
+    name: 'Dashboard3',
+    component: Dashboard3,
+    meta: {
+      title: 'Dashboard 3 - Floating Cards'
     }
   },
   {

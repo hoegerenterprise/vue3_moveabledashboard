@@ -1,5 +1,6 @@
 // Export components
 import MoveableDashboard from './components/MoveableDashboard.vue';
+import FloatingDashboard from './components/FloatingDashboard.vue';
 import DashboardCard from './components/DashboardCard.vue';
 
 // Export types
@@ -13,12 +14,13 @@ export type { DashboardState } from './stores/dashboard';
 export { useDashboardAPI, setupGlobalDashboardAPI } from './composables/useDashboardAPI';
 
 // Export components
-export { MoveableDashboard, DashboardCard };
+export { MoveableDashboard, FloatingDashboard, DashboardCard };
 
 // Default export for plugin installation
 export default {
   install(app: any) {
     app.component('MoveableDashboard', MoveableDashboard);
+    app.component('FloatingDashboard', FloatingDashboard);
     app.component('DashboardCard', DashboardCard);
   }
 };
