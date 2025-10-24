@@ -62,7 +62,7 @@
         :enable-edit="dashboard.editMode.value"
         :draggable="true"
         :resizable="true"
-        :rotatable="true"
+        :rotatable="false"
         :zoom="1"
         :grid-enabled="dashboard.gridEnabled.value"
         :grid-size="dashboard.gridSize.value"
@@ -71,7 +71,6 @@
         @card-deselected="onCardDeselected"
         @card-moved="onCardMoved"
         @card-resized="onCardResized"
-        @card-rotated="onCardRotated"
         @update:cards="onCardsUpdated"
       >
         <!-- Custom card rendering using scoped slot -->
@@ -231,11 +230,6 @@ function onCardMoved(cardId: string, position: { x: number; y: number }) {
 function onCardResized(cardId: string, size: { width: number }) {
   dashboard.updateCardSize(cardId, size);
   console.log('[Dashboard 1] Card resized:', cardId, size);
-}
-
-function onCardRotated(cardId: string, rotation: number) {
-  dashboard.updateCardRotation(cardId, rotation);
-  console.log('[Dashboard 1] Card rotated:', cardId, rotation);
 }
 
 function onCardsUpdated(cards: IMoveableDashboardContainer[]) {
