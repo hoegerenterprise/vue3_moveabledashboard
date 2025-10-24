@@ -434,8 +434,6 @@ onMounted(() => {
 
 <style scoped>
 .json-viewer {
-  background-color: rgb(var(--v-theme-surface-variant));
-  color: rgb(var(--v-theme-on-surface));
   padding: 16px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
@@ -443,7 +441,20 @@ onMounted(() => {
   overflow-x: auto;
   max-height: 500px;
   overflow-y: auto;
-  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* Light mode */
+.json-viewer {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Dark mode */
+.v-theme--dark .json-viewer {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .json-viewer.small {
@@ -452,11 +463,21 @@ onMounted(() => {
 }
 
 code {
-  background-color: rgb(var(--v-theme-surface-variant));
-  color: rgb(var(--v-theme-on-surface));
   padding: 2px 6px;
   border-radius: 3px;
   font-family: 'Courier New', monospace;
   font-size: 13px;
+}
+
+/* Light mode */
+code {
+  background-color: #f5f5f5;
+  color: #000000;
+}
+
+/* Dark mode */
+.v-theme--dark code {
+  background-color: #1e1e1e;
+  color: #ffffff;
 }
 </style>
