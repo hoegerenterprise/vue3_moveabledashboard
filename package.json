@@ -1,16 +1,17 @@
 {
   "name": "vue3-moveable-dashboard",
   "version": "1.0.0",
-  "description": "A Vue 3 component library for creating moveable, resizable, and rotatable dashboard cards with Vuetify",
+  "description": "A Vue 3 component library for creating draggable, resizable, and rotatable dashboard cards with Vuetify using native browser events",
   "author": "",
   "license": "MIT",
   "keywords": [
     "vue",
     "vue3",
     "dashboard",
-    "moveable",
     "drag-and-drop",
+    "draggable",
     "resizable",
+    "floating",
     "vuetify",
     "component"
   ],
@@ -37,7 +38,6 @@
   },
   "peerDependencies": {
     "vue": "^3.0.0",
-    "vue3-moveable": "^0.28.0",
     "vuetify": "^3.0.0"
   },
   "devDependencies": {
@@ -47,7 +47,7 @@
     "vite-plugin-vuetify": "^2.1.1",
     "vue": "^3.5.14",
     "vue-tsc": "^2.2.10",
-    "vue3-moveable": "^0.28.0",
+
     "vuetify": "^3.8.0-beta.0"
   },
   "dependencies": {

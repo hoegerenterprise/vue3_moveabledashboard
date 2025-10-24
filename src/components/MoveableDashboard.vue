@@ -21,6 +21,7 @@
         }"
         :style="getItemStyle(dashboardCard)"
         @click.stop="selectItem($event, dashboardCard)"
+        @mousedown="enableEdit && draggable ? onMouseDown($event, dashboardCard) : null"
         ref="containerRefs"
       >
         <!-- Card content wrapper with pointer-events control -->
@@ -36,36 +37,32 @@
             </DashboardCard>
           </slot>
         </div>
-      </div>
 
-      <!-- Moveable component for drag, resize, rotate -->
-      <Moveable
-        v-if="currentTargetID !== '' && enableEdit"
-        ref="moveable"
-        :target="['.target']"
-        :zoom="zoom"
-        :draggable="draggable"
-        :rotatable="rotatable"
-        :resizable="resizable"
-        :snappable="snapToGrid && gridEnabled"
-        :snapGridWidth="gridSize"
-        :snapGridHeight="gridSize"
-        :isDisplaySnapDigit="false"
-        @drag="onDrag"
-        @drag-end="onDragEnd"
-        @resize="onResize"
-        @resize-end="onResizeEnd"
-        @rotate="onRotate"
-        @rotate-end="onRotateEnd"
-      />
+        <!-- Resize handle -->
+        <div
+          v-if="enableEdit && resizable && dashboardCard.id === currentTargetID"
+          class="resize-handle"
+          @mousedown.stop="onResizeStart($event, dashboardCard)"
+        >
+          <v-icon size="small">mdi-resize-bottom-right</v-icon>
+        </div>
+
+        <!-- Rotate handle -->
+        <div
+          v-if="enableEdit && rotatable && dashboardCard.id === currentTargetID"
+          class="rotate-handle"
+          @mousedown.stop="onRotateStart($event, dashboardCard)"
+        >
+          <v-icon size="small">mdi-rotate-right</v-icon>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, nextTick, PropType } from 'vue';
+import { ref, nextTick, PropType, computed } from 'vue';
 import { IMoveableDashboardContainer } from '../types/interfaces';
-import Moveable from 'vue3-moveable';
 import DashboardCard from './DashboardCard.vue';
 import GridOverlay from './GridOverlay.vue';
 
@@ -73,7 +70,7 @@ import GridOverlay from './GridOverlay.vue';
  * MoveableDashboard Component
  *
  * A dashboard that allows cards to be moved, resized, and rotated.
- * Uses vue3-moveable for interaction capabilities.
+ * Uses native mouse events for interaction capabilities.
  *
  * Props:
  * - cards: Array of dashboard cards with position/size information
@@ -146,6 +143,35 @@ const emit = defineEmits<{
 const currentTargetID = ref<string>('');
 const containerRefs = ref<HTMLElement[]>([]);
 
+// Drag state
+const dragState = ref<{
+  isDragging: boolean;
+  cardId: string;
+  startX: number;
+  startY: number;
+  offsetX: number;
+  offsetY: number;
+} | null>(null);
+
+// Resize state
+const resizeState = ref<{
+  isResizing: boolean;
+  cardId: string;
+  startX: number;
+  startY: number;
+  startWidth: number;
+} | null>(null);
+
+// Rotate state
+const rotateState = ref<{
+  isRotating: boolean;
+  cardId: string;
+  startAngle: number;
+  centerX: number;
+  centerY: number;
+  currentRotation: number;
+} | null>(null);
+
 /**
  * Snap a value to the grid if snap-to-grid is enabled
  */
@@ -157,39 +183,14 @@ function snapValue(value: number): number {
 }
 
 /**
- * Parse transform string to extract x and y coordinates
- */
-function parseTransform(transform: string): { x: number; y: number } {
-  const regex = /translate\(([-\d.]+)px,\s*([-\d.]+)px\)/;
-  const match = transform.match(regex);
-
-  let x = 0;
-  let y = 0;
-
-  if (match) {
-    x = parseFloat(match[1]);
-    y = parseFloat(match[2]);
-  }
-
-  return { x, y };
-}
-
-/**
- * Generate transform string from card position
- */
-function getTransform(item: IMoveableDashboardContainer): string {
-  const x = item.x ?? 0;
-  const y = item.y ?? 0;
-  return `translate(${x}px, ${y}px)`;
-}
-
-/**
  * Generate complete style object for a card
  */
 function getItemStyle(item: IMoveableDashboardContainer) {
   const rotate = item.rotate ?? 0;
-  let transform = getTransform(item);
+  const x = item.x ?? 0;
+  const y = item.y ?? 0;
 
+  let transform = `translate(${x}px, ${y}px)`;
   if (rotate !== 0) {
     transform += ` rotate(${rotate}deg)`;
   }
@@ -197,86 +198,162 @@ function getItemStyle(item: IMoveableDashboardContainer) {
   return {
     width: `${item.width}px`,
     transform,
-    position: 'absolute' as const
+    position: 'absolute' as const,
+    zIndex: item.z ?? 1
   };
 }
 
 /**
- * Handle drag event
+ * Handle mouse down on card for dragging
  */
-const onDrag = (e: any) => {
-  const item = findItem(e.target);
-  if (!item) return;
+function onMouseDown(e: MouseEvent, item: IMoveableDashboardContainer) {
+  if (!props.enableEdit || !props.draggable) return;
 
-  e.target.style.transform = e.transform;
-  const transformObject = parseTransform(e.transform);
+  // Don't drag if clicking on handles
+  const target = e.target as HTMLElement;
+  if (target.closest('.resize-handle') || target.closest('.rotate-handle')) {
+    return;
+  }
 
-  item.x = transformObject.x;
-  item.y = transformObject.y;
-};
+  dragState.value = {
+    isDragging: true,
+    cardId: item.id,
+    startX: e.clientX,
+    startY: e.clientY,
+    offsetX: item.x ?? 0,
+    offsetY: item.y ?? 0
+  };
 
-/**
- * Handle drag end event
- */
-const onDragEnd = (e: any) => {
-  const item = findItem(e.target);
-  if (!item) return;
+  // Bring card to front
+  bringToFront(item.id);
 
-  // Apply snap-to-grid if enabled
-  item.x = snapValue(item.x);
-  item.y = snapValue(item.y);
-
-  // Update transform to snapped position
-  const snappedTransform = `translate(${item.x}px, ${item.y}px)` +
-    (item.rotate ? ` rotate(${item.rotate}deg)` : '');
-  e.target.style.transform = snappedTransform;
-
-  emit('card-moved', item.id, { x: item.x, y: item.y });
-  emit('update:cards', props.cards);
-};
-
-/**
- * Handle resize event
- */
-const onResize = (e: any) => {
-  const item = findItem(e.target);
-  if (!item) return;
-
-  item.width = e.width;
-  e.target.style.width = `${e.width}px`;
-};
-
-/**
- * Handle resize end event
- */
-const onResizeEnd = (e: any) => {
-  const item = findItem(e.target);
-  if (!item || typeof item.width === 'undefined') return;
-
-  emit('card-resized', item.id, { width: item.width });
-  emit('update:cards', props.cards);
-};
-
-/**
- * Handle rotate event
- */
-function onRotate(e: any) {
-  const item = findItem(e.target);
-  if (!item) return;
-
-  item.rotate = e.rotation;
-  e.target.style.transform = e.drag.transform;
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 }
 
 /**
- * Handle rotate end event
+ * Handle mouse move during drag/resize/rotate
  */
-function onRotateEnd(e: any) {
-  const item = findItem(e.target);
-  if (!item) return;
+function onMouseMove(e: MouseEvent) {
+  if (dragState.value?.isDragging) {
+    const card = props.cards.find(c => c.id === dragState.value?.cardId);
+    if (!card) return;
 
-  emit('card-rotated', item.id, item.rotate);
-  emit('update:cards', props.cards);
+    const dx = e.clientX - dragState.value.startX;
+    const dy = e.clientY - dragState.value.startY;
+
+    card.x = dragState.value.offsetX + dx;
+    card.y = dragState.value.offsetY + dy;
+  } else if (resizeState.value?.isResizing) {
+    const card = props.cards.find(c => c.id === resizeState.value?.cardId);
+    if (!card) return;
+
+    const dx = e.clientX - resizeState.value.startX;
+    card.width = Math.max(200, resizeState.value.startWidth + dx);
+  } else if (rotateState.value?.isRotating) {
+    const card = props.cards.find(c => c.id === rotateState.value?.cardId);
+    if (!card) return;
+
+    const dx = e.clientX - rotateState.value.centerX;
+    const dy = e.clientY - rotateState.value.centerY;
+    const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+    card.rotate = angle;
+  }
+}
+
+/**
+ * Handle mouse up to end drag/resize/rotate
+ */
+function onMouseUp() {
+  if (dragState.value?.isDragging) {
+    const card = props.cards.find(c => c.id === dragState.value?.cardId);
+    if (card) {
+      // Apply snap-to-grid if enabled
+      card.x = snapValue(card.x ?? 0);
+      card.y = snapValue(card.y ?? 0);
+
+      emit('card-moved', card.id, { x: card.x ?? 0, y: card.y ?? 0 });
+      emit('update:cards', props.cards);
+    }
+    dragState.value = null;
+  } else if (resizeState.value?.isResizing) {
+    const card = props.cards.find(c => c.id === resizeState.value?.cardId);
+    if (card && card.width !== undefined) {
+      emit('card-resized', card.id, { width: card.width });
+      emit('update:cards', props.cards);
+    }
+    resizeState.value = null;
+  } else if (rotateState.value?.isRotating) {
+    const card = props.cards.find(c => c.id === rotateState.value?.cardId);
+    if (card && card.rotate !== undefined) {
+      emit('card-rotated', card.id, card.rotate);
+      emit('update:cards', props.cards);
+    }
+    rotateState.value = null;
+  }
+
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseup', onMouseUp);
+}
+
+/**
+ * Handle resize start
+ */
+function onResizeStart(e: MouseEvent, item: IMoveableDashboardContainer) {
+  if (!props.enableEdit || !props.resizable) return;
+
+  e.stopPropagation();
+
+  resizeState.value = {
+    isResizing: true,
+    cardId: item.id,
+    startX: e.clientX,
+    startY: e.clientY,
+    startWidth: item.width ?? 300
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+}
+
+/**
+ * Handle rotate start
+ */
+function onRotateStart(e: MouseEvent, item: IMoveableDashboardContainer) {
+  if (!props.enableEdit || !props.rotatable) return;
+
+  e.stopPropagation();
+
+  const element = (e.target as HTMLElement).closest('.dashboard-item') as HTMLElement;
+  if (!element) return;
+
+  const rect = element.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  rotateState.value = {
+    isRotating: true,
+    cardId: item.id,
+    startAngle: Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI),
+    centerX,
+    centerY,
+    currentRotation: item.rotate ?? 0
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+}
+
+/**
+ * Bring card to front
+ */
+function bringToFront(cardId: string) {
+  const maxZ = Math.max(...props.cards.map(c => c.z ?? 1));
+  const card = props.cards.find(c => c.id === cardId);
+  if (card) {
+    card.z = maxZ + 1;
+  }
 }
 
 /**
@@ -395,5 +472,64 @@ defineExpose({
   margin: 0;
   color: #666;
   font-size: 14px;
+}
+
+/* Resize handle */
+.resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  cursor: nwse-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--v-theme-primary), 0.1);
+  border-top-left-radius: 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.dashboard-item:hover .resize-handle,
+.dashboard-item.selected .resize-handle {
+  opacity: 1;
+}
+
+.resize-handle:hover {
+  background: rgba(var(--v-theme-primary), 0.2);
+}
+
+/* Rotate handle */
+.rotate-handle {
+  position: absolute;
+  top: -12px;
+  right: 50%;
+  transform: translateX(50%);
+  width: 24px;
+  height: 24px;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--v-theme-secondary), 0.9);
+  border-radius: 50%;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.rotate-handle:active {
+  cursor: grabbing;
+}
+
+.dashboard-item:hover .rotate-handle,
+.dashboard-item.selected .rotate-handle {
+  opacity: 1;
+}
+
+.rotate-handle:hover {
+  background: rgba(var(--v-theme-secondary), 1);
 }
 </style>
