@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-page">
-    <!-- Toolbar -->
-    <div class="toolbar">
+    <!-- Fixed Top Toolbar -->
+    <div v-if="!useFloatingToolbar" class="toolbar">
       <v-toolbar color="secondary" density="compact" elevation="1">
         <v-toolbar-title>
           <v-icon class="mr-2">mdi-chart-line</v-icon>
@@ -51,11 +51,86 @@
           <v-icon>mdi-refresh</v-icon>
           <v-tooltip activator="parent" location="bottom">Reset</v-tooltip>
         </v-btn>
+
+        <v-divider vertical class="mx-2"></v-divider>
+
+        <v-btn
+          icon
+          size="small"
+          @click="toggleToolbarMode"
+          color="info"
+        >
+          <v-icon>mdi-dock-window</v-icon>
+          <v-tooltip activator="parent" location="bottom">Switch to Floating Toolbar</v-tooltip>
+        </v-btn>
       </v-toolbar>
     </div>
 
+    <!-- Floating Toolbar -->
+    <FloatingToolbar
+      v-if="useFloatingToolbar"
+      :visible="showFloatingToolbar"
+      color="secondary"
+      :initial-x="150"
+      :initial-y="100"
+      @close="showFloatingToolbar = false"
+    >
+      <template #prepend>
+        <v-chip size="small" variant="flat" color="white" class="mr-2">
+          <v-icon start size="small">mdi-cards</v-icon>
+          {{ dashboard.totalCards.value }}
+        </v-chip>
+      </template>
+
+      <v-btn icon size="small" @click="toggleGrid" :color="dashboard.gridEnabled.value ? 'success' : 'default'" variant="flat">
+        <v-icon>mdi-grid</v-icon>
+        <v-tooltip activator="parent" location="bottom">Toggle Grid</v-tooltip>
+      </v-btn>
+
+      <v-btn icon size="small" @click="toggleSnapToGrid" :color="dashboard.snapToGrid.value ? 'success' : 'default'" :disabled="!dashboard.gridEnabled.value" variant="flat">
+        <v-icon>mdi-magnet</v-icon>
+        <v-tooltip activator="parent" location="bottom">Snap to Grid</v-tooltip>
+      </v-btn>
+
+      <v-btn icon size="small" @click="toggleEditMode" :color="dashboard.editMode.value ? 'warning' : 'default'" variant="flat">
+        <v-icon>{{ dashboard.editMode.value ? 'mdi-pencil' : 'mdi-eye' }}</v-icon>
+        <v-tooltip activator="parent" location="bottom">{{ dashboard.editMode.value ? 'Edit Mode' : 'View Mode' }}</v-tooltip>
+      </v-btn>
+
+      <v-btn icon size="small" @click="addNewCard" variant="flat">
+        <v-icon>mdi-plus</v-icon>
+        <v-tooltip activator="parent" location="bottom">Add Card</v-tooltip>
+      </v-btn>
+
+      <v-btn icon size="small" @click="resetCards" variant="flat">
+        <v-icon>mdi-refresh</v-icon>
+        <v-tooltip activator="parent" location="bottom">Reset</v-tooltip>
+      </v-btn>
+
+      <template #append>
+        <v-divider vertical class="mx-2"></v-divider>
+        <v-btn icon size="small" @click="toggleToolbarMode" color="info" variant="flat">
+          <v-icon>mdi-dock-top</v-icon>
+          <v-tooltip activator="parent" location="bottom">Switch to Fixed Toolbar</v-tooltip>
+        </v-btn>
+      </template>
+    </FloatingToolbar>
+
+    <!-- Show Floating Toolbar Button (when hidden) -->
+    <v-btn
+      v-if="useFloatingToolbar && !showFloatingToolbar"
+      icon
+      color="secondary"
+      class="show-toolbar-fab"
+      size="small"
+      @click="showFloatingToolbar = true"
+    >
+      <v-icon>mdi-toolbox</v-icon>
+      <v-tooltip activator="parent" location="right">Show Floating Toolbar</v-tooltip>
+    </v-btn>
+
     <!-- Dashboard Container -->
-    <div class="dashboard-wrapper">
+    <div class="dashboard-wrapper" :class="{ 'full-height': useFloatingToolbar }">
       <MoveableDashboard
         ref="dashboardRef"
         :cards="dashboard.cards.value"
@@ -123,11 +198,16 @@ import ListCard from '../demo/cards/ListCard.vue';
 import TextCard from '../demo/cards/TextCard.vue';
 import FormCard from '../demo/cards/FormCard.vue';
 import DefaultCard from '../demo/cards/DefaultCard.vue';
+import FloatingToolbar from '../components/FloatingToolbar.vue';
 
 const dashboardRef = ref<InstanceType<typeof MoveableDashboard> | null>(null);
 
 // Use Dashboard API with unique ID (different from Dashboard 1)
 const dashboard = useDashboardAPI('dashboard-2');
+
+// Toolbar mode state
+const useFloatingToolbar = ref(false);
+const showFloatingToolbar = ref(true);
 
 // Default cards for Dashboard 2 (different content)
 const DEFAULT_CARDS: IMoveableDashboardContainer[] = [
@@ -177,6 +257,13 @@ function toggleEditMode() {
   dashboard.toggleEditMode();
   if (!dashboard.editMode.value) {
     dashboardRef.value?.selectNone();
+  }
+}
+
+function toggleToolbarMode() {
+  useFloatingToolbar.value = !useFloatingToolbar.value;
+  if (useFloatingToolbar.value) {
+    showFloatingToolbar.value = true;
   }
 }
 
@@ -267,5 +354,16 @@ onMounted(() => {
   flex: 1;
   overflow: hidden;
   position: relative;
+}
+
+.dashboard-wrapper.full-height {
+  height: 100%;
+}
+
+.show-toolbar-fab {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1999;
 }
 </style>
