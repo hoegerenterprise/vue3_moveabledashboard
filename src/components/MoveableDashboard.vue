@@ -29,7 +29,7 @@
           <!-- Use scoped slot to allow parent to customize card rendering -->
           <slot :card="dashboardCard" :is-selected="dashboardCard.id === currentTargetID">
             <!-- Default rendering if no slot provided -->
-            <DashboardCard :card="dashboardCard">
+            <DashboardCard :card="dashboardCard" :show-header="showCardHeaders">
               <div class="default-card-content">
                 <h3>{{ dashboardCard.header || 'Card ' + dashboardCard.id }}</h3>
                 <p>Card ID: {{ dashboardCard.id }}</p>
@@ -79,6 +79,7 @@ import GridOverlay from './GridOverlay.vue';
  * - resizable: Allow resizing cards (default: true)
  * - rotatable: Allow rotating cards (default: true)
  * - zoom: Zoom level for the dashboard (default: 1)
+ * - showCardHeaders: Show/hide card headers (default: true)
  *
  * Events:
  * - card-selected: Emitted when a card is selected
@@ -128,6 +129,10 @@ const props = defineProps({
   snapToGrid: {
     type: Boolean,
     default: false
+  },
+  showCardHeaders: {
+    type: Boolean,
+    default: true
   }
 });
 

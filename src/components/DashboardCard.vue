@@ -3,7 +3,7 @@
     <v-layout>
       <!-- Optional header with title and actions -->
       <v-app-bar
-        v-if="card.header"
+        v-if="showHeader && card.header"
         color="primary"
         density="compact"
         :elevation="0"
@@ -43,13 +43,14 @@ import { IDashboardCard } from '../types/interfaces';
  *
  * Props:
  * - card: The card configuration object containing id, header, dimensions, etc.
+ * - showHeader: Whether to display the card header (default: true)
  *
  * Slots:
  * - default: Main content area
  * - actions: Optional header actions (replaces default menu button)
  *
  * Example:
- * <DashboardCard :card="myCard">
+ * <DashboardCard :card="myCard" :show-header="false">
  *   <div>Your content here</div>
  * </DashboardCard>
  */
@@ -58,6 +59,10 @@ const props = defineProps({
   card: {
     type: Object as PropType<IDashboardCard>,
     required: true
+  },
+  showHeader: {
+    type: Boolean,
+    default: true
   }
 });
 </script>

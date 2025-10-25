@@ -244,6 +244,7 @@
         :grid-enabled="dashboard.gridEnabled.value"
         :grid-size="dashboard.gridSize.value"
         :snap-to-grid="dashboard.snapToGrid.value"
+        :show-card-headers="false"
         @card-selected="onCardSelected"
         @card-deselected="onCardDeselected"
         @card-moved="onCardMoved"
@@ -252,7 +253,7 @@
       >
         <!-- Custom card rendering using scoped slot -->
         <template #default="{ card, isSelected }">
-          <DashboardCard :card="card">
+          <DashboardCard :card="card" :show-header="false">
             <!-- Custom card content based on card type -->
             <template v-if="card.type === 'chart'">
               <ChartCard :card="card" />
