@@ -8,6 +8,8 @@ export * from './types';
 // Export stores
 export { useDashboardStore, createDashboardStore } from './stores/dashboard';
 export type { DashboardState } from './stores/dashboard';
+export { useCardCatalogStore, DEMO_CARD_TEMPLATES } from './stores/cardCatalog';
+export type { CardTemplate } from './stores/cardCatalog';
 
 // Export composables
 export { useDashboardAPI, setupGlobalDashboardAPI } from './composables/useDashboardAPI';

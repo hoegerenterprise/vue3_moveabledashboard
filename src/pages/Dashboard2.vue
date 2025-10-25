@@ -184,6 +184,12 @@
         </template>
       </MoveableDashboard>
     </div>
+
+    <!-- Card Selection Dialog -->
+    <CardSelectionDialog
+      v-model="showCardSelectionDialog"
+      @select="onCardTemplateSelected"
+    />
   </div>
 </template>
 
@@ -192,6 +198,7 @@ import { ref, onMounted } from 'vue';
 import { MoveableDashboard, DashboardCard } from '../index';
 import type { IMoveableDashboardContainer } from '../types';
 import { useDashboardAPI } from '../composables/useDashboardAPI';
+import { useCardCatalogStore, type CardTemplate } from '../stores/cardCatalog';
 import ChartCard from '../demo/cards/ChartCard.vue';
 import StatsCard from '../demo/cards/StatsCard.vue';
 import ListCard from '../demo/cards/ListCard.vue';
@@ -199,15 +206,22 @@ import TextCard from '../demo/cards/TextCard.vue';
 import FormCard from '../demo/cards/FormCard.vue';
 import DefaultCard from '../demo/cards/DefaultCard.vue';
 import FloatingToolbar from '../components/FloatingToolbar.vue';
+import CardSelectionDialog from '../components/CardSelectionDialog.vue';
 
 const dashboardRef = ref<InstanceType<typeof MoveableDashboard> | null>(null);
 
 // Use Dashboard API with unique ID (different from Dashboard 1)
 const dashboard = useDashboardAPI('dashboard-2');
 
+// Card Catalog Store (shared with Dashboard 1)
+const cardCatalog = useCardCatalogStore();
+
 // Toolbar mode state
 const useFloatingToolbar = ref(false);
 const showFloatingToolbar = ref(true);
+
+// Card selection dialog
+const showCardSelectionDialog = ref(false);
 
 // Default cards for Dashboard 2 (different content)
 const DEFAULT_CARDS: IMoveableDashboardContainer[] = [
@@ -268,12 +282,18 @@ function toggleToolbarMode() {
 }
 
 function addNewCard() {
+  // Show card selection dialog
+  showCardSelectionDialog.value = true;
+}
+
+function onCardTemplateSelected(template: CardTemplate) {
+  // Add card based on selected template
   dashboard.addCard({
-    type: 'chart',
-    header: `Analytics Card`,
+    type: template.type,
+    header: template.name,
     x: 100 + (dashboard.totalCards.value * 20),
     y: 100 + (dashboard.totalCards.value * 20),
-    width: 350,
+    width: template.defaultWidth || 350,
     rotate: 0,
     z: 1
   });
@@ -325,6 +345,9 @@ function onCardsUpdated(cards: IMoveableDashboardContainer[]) {
 }
 
 onMounted(() => {
+  // Note: Card catalog is already initialized by Dashboard1
+  // In production, the app will register card templates before mounting dashboards
+
   // Initialize with default cards if store is empty
   if (dashboard.totalCards.value === 0) {
     dashboard.initialize(DEFAULT_CARDS);
