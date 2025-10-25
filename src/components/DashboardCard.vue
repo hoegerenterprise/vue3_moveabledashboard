@@ -111,5 +111,10 @@ const props = defineProps({
   border-radius: 8px;
   padding: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: all !important;
+}
+
+.actions-overlay :deep(*) {
+  pointer-events: all !important;
 }
 </style>
