@@ -334,6 +334,20 @@ export function useDashboardAPI(dashboardId?: string) {
       return typedStore.snapToGridValue(value);
     },
 
+    /**
+     * Re-snap all cards to the current grid size
+     * Useful after changing grid size to align all cards to the new grid
+     *
+     * @example
+     * ```typescript
+     * dashboard.setGridSize(50); // Change grid size to 50px
+     * dashboard.reSnapAllCards(); // Re-align all cards to new 50px grid
+     * ```
+     */
+    reSnapAllCards(): void {
+      typedStore.reSnapAllCards();
+    },
+
     // ==================== INITIALIZATION ====================
 
     /**

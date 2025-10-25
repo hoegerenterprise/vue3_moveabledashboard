@@ -352,6 +352,20 @@ export const useDashboardStore = defineStore('dashboard', {
         return Math.round(value / this.gridSize) * this.gridSize;
       }
       return value;
+    },
+
+    /**
+     * Re-snap all cards to current grid size
+     */
+    reSnapAllCards() {
+      this.cards.forEach(card => {
+        if (card.x !== undefined) {
+          card.x = Math.round(card.x / this.gridSize) * this.gridSize;
+        }
+        if (card.y !== undefined) {
+          card.y = Math.round(card.y / this.gridSize) * this.gridSize;
+        }
+      });
     }
   },
 
@@ -607,6 +621,17 @@ export function createDashboardStore(dashboardId: string) {
           return Math.round(value / this.gridSize) * this.gridSize;
         }
         return value;
+      },
+
+      reSnapAllCards() {
+        this.cards.forEach(card => {
+          if (card.x !== undefined) {
+            card.x = Math.round(card.x / this.gridSize) * this.gridSize;
+          }
+          if (card.y !== undefined) {
+            card.y = Math.round(card.y / this.gridSize) * this.gridSize;
+          }
+        });
       }
     },
 

@@ -68,6 +68,17 @@
                   <v-btn size="x-small" block variant="outlined" @click="dashboard.setGridSize(50)">50px</v-btn>
                 </v-col>
               </v-row>
+              <v-divider class="my-2"></v-divider>
+              <v-btn
+                size="small"
+                block
+                color="primary"
+                variant="tonal"
+                prepend-icon="mdi-grid-large"
+                @click="dashboard.reSnapAllCards()"
+              >
+                Re-snap All Cards
+              </v-btn>
             </v-card-text>
           </v-card>
         </v-menu>
@@ -181,6 +192,17 @@
                 <v-btn size="x-small" block variant="outlined" @click="dashboard.setGridSize(50)">50px</v-btn>
               </v-col>
             </v-row>
+            <v-divider class="my-2"></v-divider>
+            <v-btn
+              size="small"
+              block
+              color="primary"
+              variant="tonal"
+              prepend-icon="mdi-grid-large"
+              @click="dashboard.reSnapAllCards()"
+            >
+              Re-snap All Cards
+            </v-btn>
           </v-card-text>
         </v-card>
       </v-menu>
