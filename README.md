@@ -1,13 +1,17 @@
 # Vue3 Moveable Dashboard
 
-A flexible and customizable Vue 3 component library for creating interactive dashboards with moveable, resizable, and rotatable cards. Built with Vue 3, Vuetify, Pinia, and vue3-moveable.
+A flexible and customizable Vue 3 component library for creating interactive dashboards with moveable and resizable cards using native browser events. Built with Vue 3, Vuetify, and Pinia - **no external drag-and-drop library dependencies**.
 
 ## Features
 
-- **Drag and Drop**: Move cards anywhere on the dashboard
+- **Drag and Drop**: Move cards anywhere on the dashboard using native mouse events
 - **Resizable**: Dynamically resize cards to fit your content
-- **Rotatable**: Rotate cards for creative layouts
-- **Grid Snapping**: Snap cards to grid for precise alignment
+- **Grid System**: Adjustable grid size (10-100px) with snap-to-grid functionality
+- **Re-snap Cards**: Automatically align all cards to grid after grid size changes
+- **Card Catalog**: Extensible card template system for registering custom card types
+- **Optional Headers**: Show or hide card headers per dashboard
+- **Edit Mode Controls**: Clean overlay buttons for headerless cards in edit mode
+- **Floating Toolbar**: Optional draggable floating toolbar with hide/show functionality
 - **Customizable**: Use slots to inject any content into cards
 - **TypeScript Support**: Full TypeScript definitions included
 - **Vuetify Integration**: Beautiful Material Design UI components
@@ -16,7 +20,8 @@ A flexible and customizable Vue 3 component library for creating interactive das
 - **Dashboard API**: Powerful composable API for programmatic control
 - **Multiple Dashboards**: Support for multiple independent dashboard instances
 - **Edit Mode**: Toggle between edit and view modes
-- **Dark Mode**: Full dark mode support
+- **Dark Mode**: Dark theme by default with full light/dark mode support
+- **Native Events**: No external moveable library - uses pure browser events for better performance
 
 ## Installation
 
@@ -38,7 +43,7 @@ npm install vue3-moveable-dashboard
 ### Install Peer Dependencies
 
 ```bash
-npm install vue3-moveable pinia pinia-plugin-persistedstate
+npm install pinia pinia-plugin-persistedstate
 ```
 
 ## Setup
@@ -65,6 +70,9 @@ import * as directives from 'vuetify/directives';
 const vuetify = createVuetify({
   components,
   directives,
+  theme: {
+    defaultTheme: 'dark' // Dark theme by default
+  }
 });
 
 // Setup Pinia with persistence
@@ -302,17 +310,40 @@ function addCard() {
   });
 }
 
+// Grid controls
+function toggleGrid() {
+  dashboard.toggleGrid();
+}
+
+function setGridSize(size: number) {
+  dashboard.setGridSize(size);
+}
+
+function reSnapCards() {
+  dashboard.reSnapAllCards(); // Re-align all cards to current grid
+}
+
 // Access reactive state
 const totalCards = dashboard.totalCards; // Automatically updates
 const cards = dashboard.cards; // Reactive array
+const gridEnabled = dashboard.gridEnabled; // Grid visibility
+const gridSize = dashboard.gridSize; // Current grid size
 </script>
 
 <template>
   <div>
     <v-btn @click="addCard">Add Card</v-btn>
+    <v-btn @click="toggleGrid">Toggle Grid</v-btn>
+    <v-btn @click="setGridSize(50)">Grid 50px</v-btn>
+    <v-btn @click="reSnapCards">Re-snap Cards</v-btn>
     <p>Total Cards: {{ totalCards }}</p>
 
-    <MoveableDashboard :cards="cards">
+    <MoveableDashboard
+      :cards="cards"
+      :grid-enabled="gridEnabled.value"
+      :grid-size="gridSize.value"
+      :snap-to-grid="true"
+    >
       <template #default="{ card }">
         <DashboardCard :card="card">
           <div class="pa-4">{{ card.header }}</div>
@@ -320,6 +351,58 @@ const cards = dashboard.cards; // Reactive array
       </template>
     </MoveableDashboard>
   </div>
+</template>
+```
+
+### Grid System
+
+The dashboard includes a powerful grid system:
+
+```typescript
+// Toggle grid visibility
+dashboard.toggleGrid();
+
+// Set grid size (10-100px)
+dashboard.setGridSize(20);
+
+// Enable snap to grid
+dashboard.toggleSnapToGrid();
+
+// Re-align all cards to current grid
+dashboard.reSnapAllCards();
+```
+
+### Headerless Cards with Edit Controls
+
+Cards can be displayed without headers, with action buttons appearing as an overlay in edit mode:
+
+```vue
+<template>
+  <MoveableDashboard
+    :cards="cards"
+    :show-card-headers="false"
+    :enable-edit="editMode"
+  >
+    <template #default="{ card }">
+      <DashboardCard
+        :card="card"
+        :show-header="false"
+        :edit-mode="editMode"
+      >
+        <div class="pa-4">{{ card.content }}</div>
+
+        <!-- Actions appear as overlay in top-right when header is hidden -->
+        <template #actions>
+          <v-btn icon size="small" @click="duplicateCard(card.id)">
+            <v-icon>mdi-content-copy</v-icon>
+          </v-btn>
+          <v-btn icon size="small" @click="deleteCard(card.id)">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </template>
+      </DashboardCard>
+    </template>
+  </MoveableDashboard>
 </template>
 ```
 
@@ -362,10 +445,12 @@ dashboard.debug()                          // Debug in console
 | `enableEdit` | `Boolean` | `true` | Enable/disable editing mode |
 | `draggable` | `Boolean` | `true` | Allow dragging cards |
 | `resizable` | `Boolean` | `true` | Allow resizing cards |
-| `rotatable` | `Boolean` | `true` | Allow rotating cards |
+| `rotatable` | `Boolean` | `false` | Allow rotating cards (disabled by default) |
 | `zoom` | `Number` | `1` | Zoom level for the dashboard |
-| `gridSize` | `Number` | `20` | Grid size for snapping |
+| `gridEnabled` | `Boolean` | `false` | Show/hide grid overlay |
+| `gridSize` | `Number` | `20` | Grid size in pixels (adjustable 10-100px) |
 | `snapToGrid` | `Boolean` | `false` | Enable grid snapping |
+| `showCardHeaders` | `Boolean` | `true` | Show/hide card headers |
 
 #### Events
 
@@ -401,13 +486,49 @@ interface MoveableDashboardMethods {
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `card` | `IDashboardCard` | **Required** | Card configuration object |
+| `showHeader` | `Boolean` | `true` | Show/hide card header |
+| `editMode` | `Boolean` | `false` | Enable edit mode overlay for headerless cards |
 
 #### Slots
 
 | Slot | Description |
 |------|-------------|
 | `default` | Main content area |
-| `actions` | Header actions (replaces default menu button) |
+| `actions` | Header actions (shows in header or as overlay when header is hidden) |
+
+### Card Catalog System
+
+Register custom card templates that users can select when adding new cards:
+
+```typescript
+import { useCardCatalogStore, type CardTemplate } from 'vue3-moveable-dashboard';
+
+const cardCatalog = useCardCatalogStore();
+
+// Register card templates
+cardCatalog.registerTemplates([
+  {
+    id: 'my-chart',
+    type: 'chart',
+    name: 'Chart Card',
+    description: 'Display data visualizations',
+    icon: 'mdi-chart-line',
+    category: 'Analytics',
+    defaultWidth: 400,
+    defaultHeight: 300
+  },
+  {
+    id: 'my-stats',
+    type: 'stats',
+    name: 'Stats Card',
+    description: 'Show key metrics',
+    icon: 'mdi-chart-box',
+    category: 'Analytics',
+    defaultWidth: 300,
+    defaultHeight: 200
+  }
+]);
+```
 
 ## TypeScript Interfaces
 
@@ -492,9 +613,9 @@ This will create a `dist` folder with the compiled package.
 
 - Vue 3.x
 - Vuetify 3.x
-- vue3-moveable 0.28.x
-- Pinia 3.x
+- Pinia 2.x
 - pinia-plugin-persistedstate 4.x
+- @mdi/font (Material Design Icons)
 
 ## Contributing
 
@@ -513,5 +634,5 @@ For issues and questions, please open an issue on the GitHub repository.
 Built with:
 - [Vue 3](https://vuejs.org/)
 - [Vuetify](https://vuetifyjs.com/)
-- [vue3-moveable](https://github.com/probil/vue3-moveable)
-- [Moveable](https://github.com/daybrush/moveable)
+- [Pinia](https://pinia.vuejs.org/)
+- Native browser events (no external drag-and-drop libraries)
