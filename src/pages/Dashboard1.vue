@@ -127,7 +127,7 @@
       @close="showFloatingToolbar = false"
     >
       <template #prepend>
-        <v-chip size="small" variant="flat" color="white" class="mr-2">
+        <v-chip size="small" variant="tonal" color="primary" class="mr-2">
           <v-icon start size="small">mdi-cards</v-icon>
           {{ dashboard.totalCards.value }}
         </v-chip>
@@ -137,8 +137,8 @@
         icon
         size="small"
         @click="toggleGrid"
-        :color="dashboard.gridEnabled.value ? 'success' : 'default'"
-        variant="flat"
+        :color="dashboard.gridEnabled.value ? 'success' : undefined"
+        variant="text"
       >
         <v-icon>mdi-grid</v-icon>
         <v-tooltip activator="parent" location="bottom">Toggle Grid</v-tooltip>
@@ -148,9 +148,9 @@
         icon
         size="small"
         @click="toggleSnapToGrid"
-        :color="dashboard.snapToGrid.value ? 'success' : 'default'"
+        :color="dashboard.snapToGrid.value ? 'success' : undefined"
         :disabled="!dashboard.gridEnabled.value"
-        variant="flat"
+        variant="text"
       >
         <v-icon>mdi-magnet</v-icon>
         <v-tooltip activator="parent" location="bottom">Snap to Grid</v-tooltip>
@@ -163,7 +163,7 @@
             icon
             size="small"
             v-bind="props"
-            variant="flat"
+            variant="text"
           >
             <v-icon>mdi-grid-large</v-icon>
             <v-tooltip activator="parent" location="bottom">Grid Size: {{ dashboard.gridSize.value }}px</v-tooltip>
@@ -211,8 +211,8 @@
         icon
         size="small"
         @click="toggleEditMode"
-        :color="dashboard.editMode.value ? 'warning' : 'default'"
-        variant="flat"
+        :color="dashboard.editMode.value ? 'warning' : undefined"
+        variant="text"
       >
         <v-icon>{{ dashboard.editMode.value ? 'mdi-pencil' : 'mdi-eye' }}</v-icon>
         <v-tooltip activator="parent" location="bottom">
@@ -224,7 +224,7 @@
         icon
         size="small"
         @click="addNewCard"
-        variant="flat"
+        variant="text"
       >
         <v-icon>mdi-plus</v-icon>
         <v-tooltip activator="parent" location="bottom">Add Card</v-tooltip>
@@ -234,7 +234,7 @@
         icon
         size="small"
         @click="resetCards"
-        variant="flat"
+        variant="text"
       >
         <v-icon>mdi-refresh</v-icon>
         <v-tooltip activator="parent" location="bottom">Reset</v-tooltip>
@@ -248,7 +248,7 @@
           size="small"
           @click="toggleToolbarMode"
           color="info"
-          variant="flat"
+          variant="text"
         >
           <v-icon>mdi-dock-top</v-icon>
           <v-tooltip activator="parent" location="bottom">Switch to Fixed Toolbar</v-tooltip>

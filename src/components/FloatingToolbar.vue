@@ -2,7 +2,7 @@
   <transition name="fade">
     <v-toolbar
       v-if="visible"
-      :color="color"
+      color="surface"
       rounded="lg"
       border
       floating
