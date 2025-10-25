@@ -133,12 +133,12 @@
         </v-chip>
       </template>
 
-      <v-btn icon size="small" @click="toggleGrid" :color="dashboard.gridEnabled.value ? 'success' : 'default'" variant="flat">
+      <v-btn icon size="small" @click="toggleGrid" :color="dashboard.gridEnabled.value ? 'success' : undefined" variant="text">
         <v-icon>mdi-grid</v-icon>
         <v-tooltip activator="parent" location="bottom">Toggle Grid</v-tooltip>
       </v-btn>
 
-      <v-btn icon size="small" @click="toggleSnapToGrid" :color="dashboard.snapToGrid.value ? 'success' : 'default'" :disabled="!dashboard.gridEnabled.value" variant="flat">
+      <v-btn icon size="small" @click="toggleSnapToGrid" :color="dashboard.snapToGrid.value ? 'success' : undefined" :disabled="!dashboard.gridEnabled.value" variant="text">
         <v-icon>mdi-magnet</v-icon>
         <v-tooltip activator="parent" location="bottom">Snap to Grid</v-tooltip>
       </v-btn>
@@ -150,7 +150,7 @@
             icon
             size="small"
             v-bind="props"
-            variant="flat"
+            variant="text"
           >
             <v-icon>mdi-grid-large</v-icon>
             <v-tooltip activator="parent" location="bottom">Grid Size: {{ dashboard.gridSize.value }}px</v-tooltip>
@@ -194,24 +194,24 @@
         </v-card>
       </v-menu>
 
-      <v-btn icon size="small" @click="toggleEditMode" :color="dashboard.editMode.value ? 'warning' : 'default'" variant="flat">
+      <v-btn icon size="small" @click="toggleEditMode" :color="dashboard.editMode.value ? 'warning' : undefined" variant="text">
         <v-icon>{{ dashboard.editMode.value ? 'mdi-pencil' : 'mdi-eye' }}</v-icon>
         <v-tooltip activator="parent" location="bottom">{{ dashboard.editMode.value ? 'Edit Mode' : 'View Mode' }}</v-tooltip>
       </v-btn>
 
-      <v-btn icon size="small" @click="addNewCard" variant="flat">
+      <v-btn icon size="small" @click="addNewCard" variant="text">
         <v-icon>mdi-plus</v-icon>
         <v-tooltip activator="parent" location="bottom">Add Card</v-tooltip>
       </v-btn>
 
-      <v-btn icon size="small" @click="resetCards" variant="flat">
+      <v-btn icon size="small" @click="resetCards" variant="text">
         <v-icon>mdi-refresh</v-icon>
         <v-tooltip activator="parent" location="bottom">Reset</v-tooltip>
       </v-btn>
 
       <template #append>
         <v-divider vertical class="mx-2"></v-divider>
-        <v-btn icon size="small" @click="toggleToolbarMode" color="info" variant="flat">
+        <v-btn icon size="small" @click="toggleToolbarMode" color="info" variant="text">
           <v-icon>mdi-dock-top</v-icon>
           <v-tooltip activator="parent" location="bottom">Switch to Fixed Toolbar</v-tooltip>
         </v-btn>
