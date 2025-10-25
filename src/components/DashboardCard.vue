@@ -1,5 +1,13 @@
 <template>
   <v-card class="dashboard-card" elevation="4">
+    <!-- Action buttons overlay for headerless cards in edit mode -->
+    <div
+      v-if="!showHeader && editMode && $slots.actions"
+      class="actions-overlay"
+    >
+      <slot name="actions"></slot>
+    </div>
+
     <v-layout>
       <!-- Optional header with title and actions -->
       <v-app-bar
@@ -44,13 +52,14 @@ import { IDashboardCard } from '../types/interfaces';
  * Props:
  * - card: The card configuration object containing id, header, dimensions, etc.
  * - showHeader: Whether to display the card header (default: true)
+ * - editMode: Whether dashboard is in edit mode (default: false)
  *
  * Slots:
  * - default: Main content area
  * - actions: Optional header actions (replaces default menu button)
  *
  * Example:
- * <DashboardCard :card="myCard" :show-header="false">
+ * <DashboardCard :card="myCard" :show-header="false" :edit-mode="true">
  *   <div>Your content here</div>
  * </DashboardCard>
  */
@@ -63,6 +72,10 @@ const props = defineProps({
   showHeader: {
     type: Boolean,
     default: true
+  },
+  editMode: {
+    type: Boolean,
+    default: false
   }
 });
 </script>
@@ -72,10 +85,31 @@ const props = defineProps({
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+  isolation: isolate;
+}
+
+.dashboard-card :deep(.v-layout) {
+  position: relative;
+  z-index: 1;
 }
 
 .card-content {
   flex: 1;
   overflow: auto;
+}
+
+.actions-overlay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1000;
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 </style>

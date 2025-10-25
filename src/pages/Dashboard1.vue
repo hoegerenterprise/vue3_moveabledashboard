@@ -291,7 +291,7 @@
       >
         <!-- Custom card rendering using scoped slot -->
         <template #default="{ card, isSelected }">
-          <DashboardCard :card="card" :show-header="true">
+          <DashboardCard :card="card" :show-header="true" :edit-mode="dashboard.editMode.value">
             <!-- Custom card content based on card type -->
             <template v-if="card.type === 'chart'">
               <ChartCard :card="card" />
