@@ -106,12 +106,19 @@ const props = defineProps({
   z-index: 1000;
   display: flex;
   gap: 4px;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(8px);
   border-radius: 8px;
   padding: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   pointer-events: all !important;
+}
+
+/* Dark theme override */
+:deep(.v-theme--dark) .actions-overlay,
+.v-theme--dark .actions-overlay {
+  background: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .actions-overlay :deep(*) {
