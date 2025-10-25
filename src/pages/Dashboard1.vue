@@ -32,6 +32,46 @@
           <v-icon>mdi-magnet</v-icon>
           <v-tooltip activator="parent" location="bottom">Snap to Grid</v-tooltip>
         </v-btn>
+
+        <!-- Grid Size Control -->
+        <v-menu v-if="dashboard.gridEnabled.value" offset-y>
+          <template v-slot:activator="{ props }">
+            <v-btn
+              icon
+              size="small"
+              v-bind="props"
+            >
+              <v-icon>mdi-grid-large</v-icon>
+              <v-tooltip activator="parent" location="bottom">Grid Size: {{ dashboard.gridSize.value }}px</v-tooltip>
+            </v-btn>
+          </template>
+          <v-card min-width="250">
+            <v-card-text>
+              <div class="text-subtitle-2 mb-2">Grid Size: {{ dashboard.gridSize.value }}px</div>
+              <v-slider
+                :model-value="dashboard.gridSize.value"
+                @update:model-value="dashboard.setGridSize"
+                :min="10"
+                :max="100"
+                :step="5"
+                thumb-label
+                color="primary"
+              ></v-slider>
+              <v-row dense>
+                <v-col cols="4">
+                  <v-btn size="x-small" block variant="outlined" @click="dashboard.setGridSize(10)">10px</v-btn>
+                </v-col>
+                <v-col cols="4">
+                  <v-btn size="x-small" block variant="outlined" @click="dashboard.setGridSize(20)">20px</v-btn>
+                </v-col>
+                <v-col cols="4">
+                  <v-btn size="x-small" block variant="outlined" @click="dashboard.setGridSize(50)">50px</v-btn>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-menu>
+
         <v-btn
           icon
           size="small"
@@ -104,6 +144,46 @@
         <v-icon>mdi-magnet</v-icon>
         <v-tooltip activator="parent" location="bottom">Snap to Grid</v-tooltip>
       </v-btn>
+
+      <!-- Grid Size Control -->
+      <v-menu v-if="dashboard.gridEnabled.value" offset-y>
+        <template v-slot:activator="{ props }">
+          <v-btn
+            icon
+            size="small"
+            v-bind="props"
+            variant="flat"
+          >
+            <v-icon>mdi-grid-large</v-icon>
+            <v-tooltip activator="parent" location="bottom">Grid Size: {{ dashboard.gridSize.value }}px</v-tooltip>
+          </v-btn>
+        </template>
+        <v-card min-width="250">
+          <v-card-text>
+            <div class="text-subtitle-2 mb-2">Grid Size: {{ dashboard.gridSize.value }}px</div>
+            <v-slider
+              :model-value="dashboard.gridSize.value"
+              @update:model-value="dashboard.setGridSize"
+              :min="10"
+              :max="100"
+              :step="5"
+              thumb-label
+              color="primary"
+            ></v-slider>
+            <v-row dense>
+              <v-col cols="4">
+                <v-btn size="x-small" block variant="outlined" @click="dashboard.setGridSize(10)">10px</v-btn>
+              </v-col>
+              <v-col cols="4">
+                <v-btn size="x-small" block variant="outlined" @click="dashboard.setGridSize(20)">20px</v-btn>
+              </v-col>
+              <v-col cols="4">
+                <v-btn size="x-small" block variant="outlined" @click="dashboard.setGridSize(50)">50px</v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-menu>
 
       <v-btn
         icon
