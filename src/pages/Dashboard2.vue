@@ -127,7 +127,7 @@
       @close="showFloatingToolbar = false"
     >
       <template #prepend>
-        <v-chip size="small" variant="flat" color="white" class="mr-2">
+        <v-chip size="small" variant="tonal" color="secondary" class="mr-2">
           <v-icon start size="small">mdi-cards</v-icon>
           {{ dashboard.totalCards.value }}
         </v-chip>
