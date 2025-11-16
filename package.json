@@ -24,7 +24,8 @@
       "import": "./dist/index.es.js",
       "require": "./dist/index.cjs.js"
     },
-    "./dist/style.css": "./dist/vue3-moveable-dashboard.css"
+    "./dist/style.css": "./dist/vue3-moveable-dashboard.css",
+    "./dist/vue3-moveable-dashboard.css": "./dist/vue3-moveable-dashboard.css"
   },
   "files": [
     "dist",
