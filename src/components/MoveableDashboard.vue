@@ -29,7 +29,14 @@
           <!-- Use scoped slot to allow parent to customize card rendering -->
           <slot :card="dashboardCard" :is-selected="dashboardCard.id === currentTargetID">
             <!-- Default rendering if no slot provided -->
-            <DashboardCard :card="dashboardCard" :show-header="showCardHeaders">
+            <DashboardCard
+              :card="dashboardCard"
+              :show-header="
+                dashboardCard.useHeader !== undefined
+                  ? dashboardCard.useHeader
+                  : (dashboardCard.hideHeader !== undefined ? !dashboardCard.hideHeader : showCardHeaders)
+              "
+            >
               <div class="default-card-content">
                 <h3>{{ dashboardCard.header || 'Card ' + dashboardCard.id }}</h3>
                 <p>Card ID: {{ dashboardCard.id }}</p>

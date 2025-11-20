@@ -2,7 +2,7 @@
   <v-card class="dashboard-card" elevation="4">
     <!-- Action buttons overlay for headerless cards in edit mode -->
     <div
-      v-if="!showHeader && editMode && $slots.actions"
+      v-if="!shouldShowHeader && editMode && $slots.actions"
       class="actions-overlay"
     >
       <slot name="actions"></slot>
@@ -11,8 +11,8 @@
     <v-layout>
       <!-- Optional header with title and actions -->
       <v-app-bar
-        v-if="showHeader && card.header"
-        color="primary"
+        v-if="shouldShowHeader && card.header"
+        :color="card.headerColor || 'primary'"
         density="compact"
         :elevation="0"
       >
@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
+import { PropType, computed } from 'vue';
 import { IDashboardCard } from '../types/interfaces';
 
 /**
@@ -51,6 +51,9 @@ import { IDashboardCard } from '../types/interfaces';
  *
  * Props:
  * - card: The card configuration object containing id, header, dimensions, etc.
+ *   - card.headerColor: Optional color for the header (e.g., 'primary', 'secondary', '#ff0000')
+ *   - card.useHeader: Optional boolean to show/hide header (overrides showHeader prop)
+ *   - card.hideHeader: Optional boolean to hide header (legacy, use useHeader instead)
  * - showHeader: Whether to display the card header (default: true)
  * - editMode: Whether dashboard is in edit mode (default: false)
  *
@@ -77,6 +80,17 @@ const props = defineProps({
     type: Boolean,
     default: false
   }
+});
+
+// Compute the final showHeader value, prioritizing card.useHeader
+const shouldShowHeader = computed(() => {
+  if (props.card.useHeader !== undefined) {
+    return props.card.useHeader;
+  }
+  if (props.card.hideHeader !== undefined) {
+    return !props.card.hideHeader;
+  }
+  return props.showHeader;
 });
 </script>
 

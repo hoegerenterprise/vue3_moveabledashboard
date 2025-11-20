@@ -5,6 +5,9 @@ export interface IDashboardCard {
   id: string;
   type?: string;
   header?: string;
+  hideHeader?: boolean;
+  useHeader?: boolean;
+  headerColor?: string;
   width?: number;
   x?: number;
   y?: number;
